@@ -139,7 +139,7 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     grad_j = grad_j/torch.norm(grad_j)
 
 
-    return max( np.inner(grad_i, grad_j)-gamma ,0 )
+    return max( torch.inner(grad_i, grad_j)-gamma ,0 )
 
 
 
