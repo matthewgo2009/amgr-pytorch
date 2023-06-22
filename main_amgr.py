@@ -126,7 +126,7 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     # loss_i.backward() 
     # grad_i = torch.autograd.grad(loss_i, list(model.parameters()))
     grad_i = compute_grad(x_i, y_i,criterion, model)
-    grad_i = grad_i/np.linalg.norm(grad_i)
+    grad_i = grad_i/torch.norm(grad_i)
 
     # x_j = x_j.unsqueeze(0)
     # y_j = y_j.unsqueeze(0)
@@ -135,13 +135,11 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     # loss_j.backward()
     # grad_j = torch.autograd.grad(loss_j, list(model.parameters()))
 
-    grad_j = compute_grad(x_j, y_j, criterion,model)
+    grad_j = compute_grad(x_j, y_j, criterion,model) 
+    grad_j = grad_j/torch.norm(grad_j)
 
 
-    grad_j = grad_j/np.linalg.norm(grad_j)
-
-
-    return max( np.inner(grad_i, grad_j)-gamma ,0)
+    return max( np.inner(grad_i, grad_j)-gamma ,0 )
 
 
 
