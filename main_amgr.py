@@ -73,7 +73,7 @@ def main():
     for epoch in loop:
 
         # train for one epoch
-        train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma)
+        train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma,z)
         writer.add_scalar("train/acc", train_acc, epoch)
         writer.add_scalar("train/loss", train_loss, epoch)
         lr_scheduler.step()
@@ -143,7 +143,7 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
 
 
 
-def train(train_dataset, model, criterion, optimizer,num_train,gamma):
+def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
     """ Run one train epoch """
     beta = 0.2
     losses = utils.AverageMeter()
