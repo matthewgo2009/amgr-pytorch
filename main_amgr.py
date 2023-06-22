@@ -110,7 +110,7 @@ def compute_grad(sample, target, criterion, model):
 
     grad = torch.autograd.grad(loss, list(model.parameters()))
 
-    flat_grad = torch.tensor([])
+    flat_grad = torch.tensor([]).to(device)
     for item in grad:
         flat_grad = torch.cat((flat_grad,item.flatten()), dim=0)
     # flat_grad = torch.stack([item.flatten() for item in grad])
