@@ -37,6 +37,7 @@ def main():
     
     gamma = 0.3
     eta = 0.01
+
     if args.logit_adj_post:
         if os.path.isfile(os.path.join(model_loc, "model.th")):
             print("=> loading pretrained model ")
@@ -146,7 +147,7 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
 
 def train(train_dataset, model, criterion, optimizer,num_train,gamma):
     """ Run one train epoch """
-
+    beta = 0.2
     losses = utils.AverageMeter()
     accuracies = utils.AverageMeter()
 
