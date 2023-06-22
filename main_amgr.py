@@ -188,7 +188,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
             for j in range(len(B2)):
                 x_j,y_j = B2[j], Y2[j]
                 corr = corr + q(model,criterion, x_i,y_i,x_j,y_j,gamma) - q(old_model,criterion, x_i,y_i,x_j,y_j,gamma) 
-            z[i] = (1-beta)*(z[i]+corr1) + beta*corr1
+            z[i] = (1-beta)*(z[i]+corr) + beta*corr
             weight.append(math.exp(-z[i]))
 
 
