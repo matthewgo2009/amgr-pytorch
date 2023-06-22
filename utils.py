@@ -2,6 +2,8 @@ import os
 import torch
 import numpy as np
 from torch.utils.data import DataLoader
+from torchvision.datasets import ImageFolder 
+
 from dataset.utils import DATASET_MAPPINGS
 from dataset.transforms import TRAIN_TRANSFORMS, TEST_TRANSFORMS
 
@@ -137,15 +139,18 @@ def get_loaders(args):
                             train=True,
                             transform=TRAIN_TRANSFORMS[args.dataset],
                             download=True)
+    # train_dataset = ImageFolder(root=train_dataset_path)
+
+    num_train = len(train_dataset)
 
     test_dataset = dataset(root=args.data_home,
                            train=False,
                            transform=TEST_TRANSFORMS[args.dataset])
 
-    train_loader = DataLoader(dataset=train_dataset,
-                              batch_size=args.batch_size,
-                              shuffle=True,
-                              num_workers=args.num_workers)
+    # train_loader = DataLoader(dataset=train_dataset,
+    #                           batch_size=args.batch_size,
+    #                           shuffle=False,
+    #                           num_workers=args.num_workers)
 
     test_loader = DataLoader(dataset=test_dataset,
                              batch_size=args.batch_size,
@@ -156,4 +161,4 @@ def get_loaders(args):
     args.epochs = train_dataset.get_epoch()
     args.scheduler_steps = train_dataset.get_scheduler()
 
-    return train_loader, test_loader
+    return train_dataset, test_loader,num_train
