@@ -109,7 +109,7 @@ def compute_grad(sample, target, criterion, model):
     prediction = model(sample)
     loss = criterion(prediction, target)
 
-    grad = torch.autograd.grad(loss, model.parameters())
+    grad = torch.autograd.grad(loss, list(model.parameters()))
 
     flat_grad = torch.tensor([]).to(device)
     for item in grad:
@@ -119,8 +119,7 @@ def compute_grad(sample, target, criterion, model):
 
 def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     cos = torch.nn.CosineSimilarity(dim=0)
-    # x_i = x_i.unsqueeze(0)
-    # y_i = y_i.unsqueeze(0)
+  
 
     # output_i = model(x_i)
     # loss_i = criterion(output_i, y_i)
@@ -129,8 +128,7 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     grad_i = compute_grad(x_i, y_i,criterion, model)
     # grad_i = grad_i/torch.norm(grad_i)
 
-    # x_j = x_j.unsqueeze(0)
-    # y_j = y_j.unsqueeze(0)
+ 
     # output_j = model(x_j)
     # loss_j = criterion(output_j, y_j)
     # loss_j.backward()
