@@ -109,15 +109,16 @@ def compute_grad(sample, target, criterion, model):
     prediction = model(sample)
     loss = criterion(prediction, target)
 
-    grad = torch.autograd.grad(loss, list(model.parameters()))
+    grad = torch.autograd.grad(loss, model.parameters())
 
-    flat_grad = torch.tensor([]).to(device)
-    for item in grad:
-        flat_grad = torch.cat((flat_grad,item.flatten()), dim=0)
+    # flat_grad = torch.tensor([]).to(device)
+    # for item in grad:
+    #     flat_grad = torch.cat((flat_grad,item.flatten()), dim=0)
     # flat_grad = torch.stack([item.flatten() for item in grad])
-    return flat_grad
+    return grad
 
 def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
+    cos = torch.nn.CosineSimilarity(dim=0)
     # x_i = x_i.unsqueeze(0)
     # y_i = y_i.unsqueeze(0)
 
@@ -126,7 +127,7 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     # loss_i.backward() 
     # grad_i = torch.autograd.grad(loss_i, list(model.parameters()))
     grad_i = compute_grad(x_i, y_i,criterion, model)
-    grad_i = grad_i/torch.norm(grad_i)
+    # grad_i = grad_i/torch.norm(grad_i)
 
     # x_j = x_j.unsqueeze(0)
     # y_j = y_j.unsqueeze(0)
@@ -136,11 +137,11 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     # grad_j = torch.autograd.grad(loss_j, list(model.parameters()))
 
     grad_j = compute_grad(x_j, y_j, criterion,model) 
-    grad_j = grad_j/torch.norm(grad_j)
+    # grad_j = grad_j/torch.norm(grad_j)
 
 
-    return max( torch.inner(grad_i, grad_j)-gamma ,0 )
-
+    # return max( torch.inner(grad_i, grad_j)-gamma ,0 )
+    return cos(grad_i,grad_j)
 
 
 def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
