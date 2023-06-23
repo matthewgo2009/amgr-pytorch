@@ -150,7 +150,7 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
 def weighted_criterion(outputs,labels,criterion,weight):
     weighted_loss = torch.tensor(0)
     weighted_loss.to(device)
-    loss=0
+    loss=torch.tensor(0)
     loss.to(device)
     for i in range(len(outputs)):
         weighted_loss = weighted_loss + weight[i]*criterion(outputs[i],labels[i])
