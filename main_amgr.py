@@ -235,8 +235,8 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
         weighted_loss.backward()
         optimizer.step()
 
-        losses.update(loss.item(), inputs.size(0))
-        accuracies.update(acc, inputs.size(0))
+        losses.update(loss.item(), B1.size(0))
+        accuracies.update(acc, B1.size(0))
 
 
     return losses.avg, accuracies.avg
