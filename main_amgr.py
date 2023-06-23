@@ -142,7 +142,7 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     np.random.shuffle(arr)
     corr = 0
     for i in range(int(len(arr)*0.1)):
-        corr = corr + cos(grad_i[arr[i]], grad_j[arr[i]])
+        corr = corr + cos(grad_i[arr[i]].flatten(), grad_j[arr[i]].flatten())
     # return max( torch.inner(grad_i, grad_j)-gamma ,0 )
     return max( corr-gamma ,0 )
 
