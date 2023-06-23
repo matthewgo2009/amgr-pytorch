@@ -150,9 +150,12 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
 def weighted_criterion(outputs,labels,criterion,weight):
     weighted_loss = torch.tensor(0)
     weighted_loss.to(device)
+    loss=0
+    loss.to(device)
     for i in range(len(outputs)):
         weighted_loss = weighted_loss + weight[i]*criterion(outputs[i],labels[i])
-    return weighted_loss
+        loss = loss+criterion(outputs[i],labels[i])
+    return weighted_loss,loss/len(outputs)
 
 
 def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
@@ -211,13 +214,13 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
 
         output = model(B1_var)
         acc = utils.accuracy(output.data, Y1_var) 
-        loss = weighted_criterion(output, Y1_var,criterion,weight)
+        weighted_loss, loss = weighted_criterion(output, Y1_var,criterion,weight)
 
         loss_r = 0
         for parameter in model.parameters():
             loss_r += torch.sum(parameter ** 2)
         loss = loss + args.weight_decay * loss_r
-        
+        weighted_loss =   weighted_loss +args.weight_decay * loss_r
         # for i in range(arr1[t]*batch_size, (arr1[t]+1)*batch_size):
         #     x_i,y_i = train_dataset[i]
         #     output_i = model(x_i)
@@ -229,7 +232,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
  
         # model.parameters() = model.parameters() - eta*weighted_grad
         optimizer.zero_grad()
-        loss.backward()
+        weighted_loss.backward()
         optimizer.step()
 
         losses.update(loss.item(), inputs.size(0))
