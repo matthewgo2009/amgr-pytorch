@@ -147,6 +147,14 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     return max( corr-gamma ,0 )
 
 
+def weighted_criterion(outputs,labels,criterion,weight):
+    weighted_loss = torch.tensor(0)
+    weighted_loss.to(device)
+    for i in range(len(outputs)):
+        weighted_loss = weighted_loss + weight[i]*criterion(outputs[i],labels[i])
+    return weighted_loss
+
+
 def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
     """ Run one train epoch """
     beta = 0.2
@@ -203,7 +211,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
 
         output = model(B1_var)
         acc = utils.accuracy(output.data, Y1_var) 
-        loss = criterion(output, Y1_var, weight=weight)
+        loss = weighted_criterion(output, Y1_var,criterion,weight)
 
         loss_r = 0
         for parameter in model.parameters():
