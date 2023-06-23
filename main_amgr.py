@@ -114,7 +114,7 @@ def compute_grad(sample, target, criterion, model):
     flat_grad = torch.tensor([]).to(device)
     for item in grad:
         flat_grad = torch.cat((flat_grad,item.flatten()), dim=0)
-    flat_grad = torch.stack([item.flatten() for item in grad])
+    # flat_grad = torch.stack([item.flatten() for item in grad])
     return flat_grad
 
 def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
