@@ -193,8 +193,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
         Y2_var = Y2
  
         
-        print(111111111111)
-
+ 
         #####update z to approx exp of sum #######
         weight = []
         for i in range(len(B1)):
