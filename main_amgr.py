@@ -119,20 +119,9 @@ def compute_grad(sample, target, criterion, model):
 
 def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     cos = torch.nn.CosineSimilarity(dim=0)
-  
-
-    # output_i = model(x_i)
-    # loss_i = criterion(output_i, y_i)
-    # loss_i.backward() 
-    # grad_i = torch.autograd.grad(loss_i, list(model.parameters()))
+   
     grad_i = compute_grad(x_i, y_i,criterion, model)
-    # grad_i = grad_i/torch.norm(grad_i)
-
- 
-    # output_j = model(x_j)
-    # loss_j = criterion(output_j, y_j)
-    # loss_j.backward()
-    # grad_j = torch.autograd.grad(loss_j, list(model.parameters()))
+     
 
     grad_j = compute_grad(x_j, y_j, criterion,model) 
     # grad_j = grad_j/torch.norm(grad_j)
@@ -141,9 +130,9 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
  
     np.random.shuffle(arr)
     corr = 0
-    for i in range(int(len(arr)*0.1)):
-        corr = corr + cos(grad_i[arr[i]].flatten(), grad_j[arr[i]].flatten())
-    # return max( torch.inner(grad_i, grad_j)-gamma ,0 )
+    for i in range(int(len(arr)*0.01)):
+        corr = corr + cos( grad_i[arr[i]].flatten(), grad_j[arr[i]].flatten() )
+
     return max( corr-gamma ,0 )
 
 
@@ -181,7 +170,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
         Y1 = Y1.to(device)
         B1_var = B1.to(device)
         Y1_var = Y1
- 
+
 
         batch = [train_dataset[i] for i in arr2[t*args.batch_size:(t+1)*args.batch_size]]
         B2 = list(zip(*batch))[0]
@@ -219,16 +208,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
             loss_r += torch.sum(parameter ** 2)
         loss = loss + args.weight_decay * loss_r
         weighted_loss =   weighted_loss +args.weight_decay * loss_r
-        # for i in range(arr1[t]*batch_size, (arr1[t]+1)*batch_size):
-        #     x_i,y_i = train_dataset[i]
-        #     output_i = model(x_i)
-        #     loss_i = criterion(weight=weight,output_i, y_i)
-        #     loss_i.backward()
-        #     para = model.parameters()
-        #     grad_i = para.grad
-        #     weighted_grad = weighted_grad + math.exp(-z[i])*grad_i 
- 
-        # model.parameters() = model.parameters() - eta*weighted_grad
+       
         optimizer.zero_grad()
         weighted_loss.backward()
         optimizer.step()
