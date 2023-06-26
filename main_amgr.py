@@ -205,8 +205,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
             z[i] = (1-beta)*(z[i]+corr) + beta*corr
             weight.append(math.exp(-z[i]))
             
-        print('finish z update')
-
+ 
         #####compute stochastic gradients#######
 
         old_model = model 
