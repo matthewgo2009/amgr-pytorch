@@ -109,7 +109,7 @@ def compute_grad(sample, target, criterion, model):
     prediction = model(sample)
     loss = criterion(prediction, target)
 
-    grad = torch.autograd.grad(loss, list(model.parameters()))
+    grad = torch.autograd.grad(loss,  model.parameters())
 
  
     return grad
