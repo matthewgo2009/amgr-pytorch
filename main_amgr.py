@@ -111,10 +111,7 @@ def compute_grad(sample, target, criterion, model):
 
     grad = torch.autograd.grad(loss, list(model.parameters()))
 
-    # flat_grad = torch.tensor([]).to(device)
-    # for item in grad:
-    #     flat_grad = torch.cat((flat_grad,item.flatten()), dim=0)
-    # flat_grad = torch.stack([item.flatten() for item in grad])
+ 
     return grad
 
 def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
@@ -124,8 +121,7 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
      
 
     grad_j = compute_grad(x_j, y_j, criterion,model) 
-    # grad_j = grad_j/torch.norm(grad_j)
-
+ 
     arr = np.arange(len(grad_i)) 
  
     np.random.shuffle(arr)
@@ -190,8 +186,8 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
             corr = 0
             for j in range(int(len(B2)*0.05)):
                 x_j,y_j = B2[j], Y2[j]
-                corr = corr + q(model,criterion, x_i,y_i,x_j,y_j,gamma) - q(old_model,criterion, x_i,y_i,x_j,y_j,gamma) 
-            z[i] = (1-beta)*(z[i]+corr) + beta*corr
+                corr = corr + q(model,criterion, x_i,y_i,x_j,y_j,gamma)
+            z[i] = corr
             weight.append(math.exp(-z[i]))
             
  
