@@ -103,7 +103,7 @@ def main():
 
 
 def compute_grad(sample, target, criterion, model):
-    start_time = time.time()
+    # start_time = time.time()
 
     
     sample = sample.unsqueeze(0)  # prepend batch dimension for processing
@@ -119,7 +119,7 @@ def compute_grad(sample, target, criterion, model):
     return grad
 
 def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
-    start_time = time.time()
+    # start_time = time.time()
 
     cos = torch.nn.CosineSimilarity(dim=0)
    
@@ -134,13 +134,13 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     corr = 0
     for i in range(int(len(arr)*0.01)):
         corr = corr + cos( grad_i[arr[i]].flatten(), grad_j[arr[i]].flatten() )
-    print("---q runtime is %s seconds ---" % (time.time() - start_time))
+    # print("---q runtime is %s seconds ---" % (time.time() - start_time))
 
     return max( corr-gamma ,0 )
 
 
 def weighted_criterion(outputs,labels,criterion,weight):
-    start_time = time.time()
+    # start_time = time.time()
 
     weighted_loss = torch.tensor(0)
     weighted_loss.to(device)
@@ -150,7 +150,7 @@ def weighted_criterion(outputs,labels,criterion,weight):
         weighted_loss = weighted_loss + weight[i]*criterion(outputs[i],labels[i])
         loss = loss + criterion(outputs[i],labels[i])
 
-    print("---weighted_criterion runtime is %s seconds ---" % (time.time() - start_time))
+    # print("---weighted_criterion runtime is %s seconds ---" % (time.time() - start_time))
 
     return weighted_loss,loss/len(outputs)
 
@@ -172,8 +172,10 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
     print("---number of batches is %s ---" % num_batches)
 
     for t in range(num_batches):
+        start_time = time.time()
+
         batch = [train_dataset[i] for i in arr1[t*args.batch_size:(t+1)*args.batch_size]]
-        print("---current batch is %s ---" % arr1[t*args.batch_size:(t+1)*args.batch_size])
+        # print("---current batch is %s ---" % arr1[t*args.batch_size:(t+1)*args.batch_size])
     
         B1 = list(zip(*batch))[0] 
         B1 =  torch.stack(B1)
@@ -227,7 +229,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
 
         losses.update(loss.item(), B1.size(0))
         accuracies.update(acc, B1.size(0))
-
+        print("---one epoch runtime is %s seconds ---" % (time.time() - start_time))
 
     return losses.avg, accuracies.avg
 
