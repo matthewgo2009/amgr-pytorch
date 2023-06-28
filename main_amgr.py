@@ -169,8 +169,12 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
  
     np.random.shuffle(arr1)
     np.random.shuffle(arr2)
+    print("---number of batches is %s ---" % num_batches)
+
     for t in range(num_batches):
         batch = [train_dataset[i] for i in arr1[t*args.batch_size:(t+1)*args.batch_size]]
+        print("---current batch is %s ---" % arr1[t*args.batch_size:(t+1)*args.batch_size])
+    
         B1 = list(zip(*batch))[0] 
         B1 =  torch.stack(B1)
         Y1 = list(zip(*batch))[1] 
