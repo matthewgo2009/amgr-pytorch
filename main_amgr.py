@@ -12,6 +12,7 @@ from model import resnet32
 from config import get_arguments
 import numpy as np
 import math
+import time
 
 parser = get_arguments()
 args = parser.parse_args()
@@ -102,6 +103,8 @@ def main():
 
 
 def compute_grad(sample, target, criterion, model):
+    start_time = time.time()
+
     
     sample = sample.unsqueeze(0)  # prepend batch dimension for processing
     target = target.unsqueeze(0)
@@ -110,11 +113,14 @@ def compute_grad(sample, target, criterion, model):
     loss = criterion(prediction, target)
 
     grad = torch.autograd.grad(loss,  model.parameters())
+    print("---compute_grad runtime is %s seconds ---" % (time.time() - start_time))
 
  
     return grad
 
 def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
+    start_time = time.time()
+
     cos = torch.nn.CosineSimilarity(dim=0)
    
     grad_i = compute_grad(x_i, y_i,criterion, model)
@@ -128,11 +134,14 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
     corr = 0
     for i in range(int(len(arr)*0.01)):
         corr = corr + cos( grad_i[arr[i]].flatten(), grad_j[arr[i]].flatten() )
+    print("---q runtime is %s seconds ---" % (time.time() - start_time))
 
     return max( corr-gamma ,0 )
 
 
 def weighted_criterion(outputs,labels,criterion,weight):
+    start_time = time.time()
+
     weighted_loss = torch.tensor(0)
     weighted_loss.to(device)
     loss=torch.tensor(0)
@@ -140,6 +149,9 @@ def weighted_criterion(outputs,labels,criterion,weight):
     for i in range(len(outputs)):
         weighted_loss = weighted_loss + weight[i]*criterion(outputs[i],labels[i])
         loss = loss + criterion(outputs[i],labels[i])
+
+    print("---weighted_criterion runtime is %s seconds ---" % (time.time() - start_time))
+
     return weighted_loss,loss/len(outputs)
 
 
