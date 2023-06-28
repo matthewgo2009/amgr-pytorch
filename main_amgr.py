@@ -202,7 +202,6 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         weight = []
         for i in range(len(B1)):
             if epoch%10==0:  #update z
-                print(epoch%10)
                 x_i,y_i = B1[i], Y1[i]
                 corr = 0
                 for j in range(int(len(B2)*0.05)):
@@ -233,7 +232,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
 
         losses.update(loss.item(), B1.size(0))
         accuracies.update(acc, B1.size(0))
-        print("---one epoch runtime is %s seconds ---" % (time.time() - start_time))
+        print("---one batch runtime is %s seconds ---" % (time.time() - start_time))
 
     return losses.avg, accuracies.avg
 
