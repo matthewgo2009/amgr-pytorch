@@ -72,9 +72,9 @@ def main():
     loop = tqdm(range(0, args.epochs), total=args.epochs, leave=False)
     val_loss, val_acc = 0, 0
     for epoch in loop:
-
+        print(epoch)
         # train for one epoch
-        train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma,z)
+        train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch)
         writer.add_scalar("train/acc", train_acc, epoch)
         writer.add_scalar("train/loss", train_loss, epoch)
         lr_scheduler.step()
@@ -155,7 +155,7 @@ def weighted_criterion(outputs,labels,criterion,weight):
     return weighted_loss,loss/len(outputs)
 
 
-def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
+def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
     """ Run one train epoch """
     beta = 0.2
     losses = utils.AverageMeter()
@@ -174,9 +174,10 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
     for t in range(num_batches):
         start_time = time.time()
 
-        batch = [train_dataset[i] for i in arr1[t*args.batch_size:(t+1)*args.batch_size]]
+        B1_idx = arr1[t*args.batch_size:(t+1)*args.batch_size]
+
+        batch = [train_dataset[i] for i in B1_idx]
         # print("---current batch is %s ---" % arr1[t*args.batch_size:(t+1)*args.batch_size])
-    
         B1 = list(zip(*batch))[0] 
         B1 =  torch.stack(B1)
         Y1 = list(zip(*batch))[1] 
@@ -197,16 +198,20 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z):
  
         
  
-        #####update z to approx exp of sum #######
+        #####compute weights (exp of sum) #######
         weight = []
-        for i in range(len(B1)):
-            x_i,y_i = B1[i], Y1[i]
-            corr = 0
-            for j in range(int(len(B2)*0.05)):
-                x_j,y_j = B2[j], Y2[j]
-                corr = corr + q(model,criterion, x_i,y_i,x_j,y_j,gamma)
-            z[i] = corr
-            weight.append(math.exp(-z[i]))
+        if epoch%10==0:  #update z
+            
+            for i in range(len(B1)):
+                x_i,y_i = B1[i], Y1[i]
+                corr = 0
+                for j in range(int(len(B2)*0.05)):
+                    x_j,y_j = B2[j], Y2[j]
+                    corr = corr + q(model,criterion, x_i,y_i,x_j,y_j,gamma)
+                z[B1_idx[i]] = corr
+                weight.append(math.exp(-z[i]))
+        else:
+            weight.append(math.exp(-z[B1_idx[i]]))
             
  
         #####compute stochastic gradients#######
