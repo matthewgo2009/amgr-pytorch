@@ -113,7 +113,7 @@ def compute_grad(sample, target, criterion, model):
     loss = criterion(prediction, target)
 
     grad = torch.autograd.grad(loss,  model.parameters())
-    print("---compute_grad runtime is %s seconds ---" % (time.time() - start_time))
+    # print("---compute_grad runtime is %s seconds ---" % (time.time() - start_time))
 
  
     return grad
