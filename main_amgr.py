@@ -132,8 +132,9 @@ def q(model,criterion,x_i,y_i,x_j,y_j,gamma):
  
     np.random.shuffle(arr)
     corr = 0
-    for i in range(int(len(arr)*0.01)):
-        corr = corr + cos( grad_i[arr[i]].flatten(), grad_j[arr[i]].flatten() )
+    # for i in range(int(len(arr)*0.01)):
+    #     corr = corr + cos( grad_i[arr[i]].flatten(), grad_j[arr[i]].flatten() )
+    corr = cos( grad_i[-1].flatten(), grad_j[-1].flatten() )
     # print("---q runtime is %s seconds ---" % (time.time() - start_time))
 
     return max( corr-gamma ,0 )
