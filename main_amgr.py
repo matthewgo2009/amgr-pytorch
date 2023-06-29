@@ -118,7 +118,7 @@ def compute_grad(sample, target, criterion, model):
  
     return grad
 
-def q(model,criterion,grad_i,grad_j,gamma):
+def q(model,criterion,grad_i,x_j,y_j,gamma):
     # start_time = time.time()
 
     cos = torch.nn.CosineSimilarity(dim=0)
