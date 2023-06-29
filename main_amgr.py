@@ -134,7 +134,9 @@ def q(model,criterion,grad_i,x_j,y_j,gamma):
     corr = 0
     # for i in range(int(len(arr)*0.01)):
     #     corr = corr + cos( grad_i[arr[i]].flatten(), grad_j[arr[i]].flatten() )
-    corr = cos( grad_i[-1].flatten(), grad_j[-1].flatten() )
+    with torch.no_grad():
+
+        corr = cos( grad_i[-1].flatten(), grad_j[-1].flatten() )
     # print("---q runtime is %s seconds ---" % (time.time() - start_time))
 
     return max( corr-gamma ,0 )
@@ -198,19 +200,18 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         Y2_var = Y2
  
         
-        with torch.no_grad():
-            #####compute weights (exp of sum) #######
-            weight = []
-            for i in range(len(B1)):
-                if epoch%10==0:  #update z
-                    x_i,y_i = B1[i], Y1[i]
-                    grad_i = compute_grad(x_i, y_i, criterion, model)
-                    corr = 0
-                    for j in range(int(len(B2)*0.05)):
-                        x_j,y_j = B2[j], Y2[j]
-                        corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
-                    z[B1_idx[i]] = corr
-                weight.append(math.exp(-z[B1_idx[i]]))
+        #####compute weights (exp of sum) #######
+        weight = []
+        for i in range(len(B1)):
+            if epoch%10==0:  #update z
+                x_i,y_i = B1[i], Y1[i]
+                grad_i = compute_grad(x_i, y_i, criterion, model)
+                corr = 0
+                for j in range(int(len(B2)*0.05)):
+                    x_j,y_j = B2[j], Y2[j]
+                    corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
+                z[B1_idx[i]] = corr
+            weight.append(math.exp(-z[B1_idx[i]]))
             
                 
  
