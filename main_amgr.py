@@ -230,7 +230,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
 
         weighted_loss = loss*weight
         loss = loss.mean()
-        print(loss.item())
+        print(loss)
         loss_r = 0
         for parameter in model.parameters():
             loss_r += torch.sum(parameter ** 2)
@@ -264,7 +264,7 @@ def validate(val_loader, model, criterion):
 
             output = model(input_var)
             loss = criterion(output, target_var)
-
+            loss = loss.mean()
             if args.logit_adj_post:
                 output = output - args.logit_adjustments
 
