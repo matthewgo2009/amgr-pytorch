@@ -196,6 +196,8 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
  
         weight = torch.ones(len(B1))
         weight.to(device) 
+        print("---weight is on   ---")
+        print(weight.get_device())
         #####compute weights (exp of sum) #######
         if epoch <= 300:          #for the first 300 epoch, do standard ERM training
             pass
@@ -223,7 +225,8 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         loss = criterion(output, Y1_var)
         print("---weight is on   ---")
         print(weight.get_device())
-
+        print("---loss is on   ---")
+        print(loss.get_device())
         
 
         weighted_loss = loss*weight
