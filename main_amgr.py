@@ -228,7 +228,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         # print(loss.get_device())
         
 
-        weighted_loss = loss*weight
+        weighted_loss = torch.inner(loss,weight)
         print(weighted_loss)
         loss = loss.mean()
         loss_r = 0
