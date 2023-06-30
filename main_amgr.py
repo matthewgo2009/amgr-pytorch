@@ -194,16 +194,13 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         B2_var = B2.to(device)
         Y2_var = Y2
  
-        
+        weight = torch.ones(len(B1))
+        weight.to(device) 
         #####compute weights (exp of sum) #######
         if epoch <= 300:          #for the first 300 epoch, do standard ERM training
-            weight = torch.ones(len(B1))
-            weight.to(device)       
-
+            pass
         else:
-            weight = torch.zeros(len(B1))
-            weight.to(device)       
-
+            weight = []
             for i in range(len(B1)):
                 if epoch%10==0:  #update z
                     x_i,y_i = B1[i], Y1[i]
@@ -214,6 +211,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
                         corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
                     z[B1_idx[i]] = corr
                 weight.append(math.exp(-z[B1_idx[i]]))
+            weight = torch.FloatTensor(weight)
             
         weight = weight.detach()
  
@@ -221,7 +219,6 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
 
  
         output = model(B1_var)
-        output.to(device)
         acc = utils.accuracy(output.data, Y1_var) 
         loss = criterion(output, Y1_var)
         print("---weight is on   ---")
