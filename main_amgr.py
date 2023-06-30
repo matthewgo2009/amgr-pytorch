@@ -211,7 +211,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
                     z[B1_idx[i]] = corr
                 weight.append(math.exp(-z[B1_idx[i]]))
             
-                
+        weight = torch.from_numpy(weight)        
  
         #####compute stochastic gradients#######
 
@@ -219,9 +219,10 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         output = model(B1_var)
         acc = utils.accuracy(output.data, Y1_var) 
         loss = criterion(output, Y1_var)
+        print("---loss is %s   ---" % loss)
+
         weighted_loss = loss*weight
         loss = loss.mean()
-        # print("---loss is %s   ---" % loss)
         loss_r = 0
         for parameter in model.parameters():
             loss_r += torch.sum(parameter ** 2)
