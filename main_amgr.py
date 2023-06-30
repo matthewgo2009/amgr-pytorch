@@ -198,7 +198,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         # print("---weight is on   ---")
         # print(weight.get_device())
         #####compute weights (exp of sum) #######
-        if epoch%300!=0 and epoch!=0:          #do 300 epoch standard ERM training
+        if epoch%300!=0 or epoch==0:          #do 300 epoch standard ERM training
             pass
         else:
             for i in range(len(B1)):
