@@ -174,7 +174,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
     print("---number of batches is %s ---" % num_batches)
 
     for t in range(num_batches):
-        start_time = time.time()
+        # start_time = time.time()
 
         B1_idx = arr1[t*args.batch_size:(t+1)*args.batch_size]
 
@@ -237,7 +237,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
 
         losses.update(loss.item(), B1.size(0))
         accuracies.update(acc, B1.size(0))
-        print("---one batch runtime is %s seconds ---" % (time.time() - start_time))
+        # print("---one batch runtime is %s seconds ---" % (time.time() - start_time))
 
     return losses.avg, accuracies.avg
 
