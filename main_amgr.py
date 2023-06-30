@@ -236,7 +236,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         weighted_loss =   weighted_loss + args.weight_decay * loss_r
        
         optimizer.zero_grad()
-        weighted_loss.backward()
+        weighted_loss.mean().backward()
         optimizer.step()
 
         losses.update(loss.item(), B1.size(0))
