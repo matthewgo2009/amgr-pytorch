@@ -230,7 +230,6 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
 
         weighted_loss = loss*weight
         loss = loss.mean()
-        print(loss)
         loss_r = 0
         for parameter in model.parameters():
             loss_r += torch.sum(parameter ** 2)
@@ -238,7 +237,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         weighted_loss =   weighted_loss + args.weight_decay * loss_r
        
         optimizer.zero_grad()
-        loss.backward()
+        weighted_loss.backward()
         optimizer.step()
 
         losses.update(loss.item(), B1.size(0))
