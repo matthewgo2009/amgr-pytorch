@@ -194,8 +194,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         B2_var = B2.to(device)
         Y2_var = Y2
  
-        weight = torch.ones(len(B1))
-        weight.to(device) 
+        weight = torch.ones(len(B1),device=device)
         print("---weight is on   ---")
         print(weight.get_device())
         #####compute weights (exp of sum) #######
