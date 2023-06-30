@@ -229,6 +229,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         
 
         weighted_loss = loss*weight
+        print(weighted_loss)
         loss = loss.mean()
         loss_r = 0
         for parameter in model.parameters():
