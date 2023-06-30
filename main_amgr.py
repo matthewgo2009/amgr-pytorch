@@ -160,7 +160,6 @@ def weighted_criterion(outputs,labels,criterion,weight):
 
 def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
     """ Run one train epoch """
-    beta = 0.2
     losses = utils.AverageMeter()
     accuracies = utils.AverageMeter()
 
@@ -201,17 +200,20 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
  
         
         #####compute weights (exp of sum) #######
-        weight = []
-        for i in range(len(B1)):
-            if epoch%10==0:  #update z
-                x_i,y_i = B1[i], Y1[i]
-                grad_i = compute_grad(x_i, y_i, criterion, model)
-                corr = 0
-                for j in range(int(len(B2)*0.05)):
-                    x_j,y_j = B2[j], Y2[j]
-                    corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
-                z[B1_idx[i]] = corr
-            weight.append(math.exp(-z[B1_idx[i]]))
+        if epoch <= 300:          #for the first 300 epoch, do standard ERM training
+            weight = np.ones(len(B1))
+        else:
+            weight = []
+            for i in range(len(B1)):
+                if epoch%10==0:  #update z
+                    x_i,y_i = B1[i], Y1[i]
+                    grad_i = compute_grad(x_i, y_i, criterion, model)
+                    corr = 0
+                    for j in range(int(len(B2)*0.05)):
+                        x_j,y_j = B2[j], Y2[j]
+                        corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
+                    z[B1_idx[i]] = corr
+                weight.append(math.exp(-z[B1_idx[i]]))
             
                 
  
