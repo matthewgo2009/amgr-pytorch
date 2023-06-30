@@ -31,7 +31,7 @@ def main():
     model = torch.nn.DataParallel(resnet32(num_classes=num_class))
     model = model.to(device)
     cudnn.benchmark = True
-    criterion = nn.CrossEntropyLoss().to(device)
+    criterion = nn.CrossEntropyLoss(reduction='none').to(device)
     
     ####create z initialization#########
     z = np.zeros(num_train)
@@ -218,9 +218,10 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
  
         output = model(B1_var)
         acc = utils.accuracy(output.data, Y1_var) 
-        weighted_loss = weighted_criterion(output, Y1_var,criterion,weight)
         loss = criterion(output, Y1_var)
-        print("---loss is %s   ---" % loss)
+        weighted_loss = loss*weight
+        loss = loss.mean()
+        # print("---loss is %s   ---" % loss)
         loss_r = 0
         for parameter in model.parameters():
             loss_r += torch.sum(parameter ** 2)
