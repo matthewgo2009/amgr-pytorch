@@ -224,7 +224,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         output.to(device)
         acc = utils.accuracy(output.data, Y1_var) 
         loss = criterion(output, Y1_var)
-        print("---weight is on   ---" weight.get_device())
+        print("---weight is on   ---"weight.get_device())
 
         weighted_loss = loss*weight
         loss = loss.mean()
