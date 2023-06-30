@@ -220,7 +220,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         acc = utils.accuracy(output.data, Y1_var) 
         weighted_loss = weighted_criterion(output, Y1_var,criterion,weight)
         loss = criterion(output, Y1_var)
-
+        print("---loss is %s   ---" % loss)
         loss_r = 0
         for parameter in model.parameters():
             loss_r += torch.sum(parameter ** 2)
