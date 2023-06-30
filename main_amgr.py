@@ -213,6 +213,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
                 weight[i] = math.exp(-z[B1_idx[i]])
              
         weight = weight.detach()
+        weight = weight/weight.sum()
  
         #####compute stochastic gradients#######
 
@@ -236,7 +237,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         weighted_loss =   weighted_loss + args.weight_decay * loss_r
        
         optimizer.zero_grad()
-        weighted_loss.mean().backward()
+        weighted_loss.backward()
         optimizer.step()
 
         losses.update(loss.item(), B1.size(0))
