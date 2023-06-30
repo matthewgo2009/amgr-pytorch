@@ -147,15 +147,12 @@ def weighted_criterion(outputs,labels,criterion,weight):
 
     weighted_loss = torch.tensor(0)
     weighted_loss.to(device)
-    loss=torch.tensor(0)
-    loss.to(device)
     for i in range(len(outputs)):
         weighted_loss = weighted_loss + weight[i]*criterion(outputs[i],labels[i])
-        loss = loss + criterion(outputs[i],labels[i])
-
+ 
     # print("---weighted_criterion runtime is %s seconds ---" % (time.time() - start_time))
 
-    return weighted_loss,loss/len(outputs)
+    return weighted_loss 
 
 
 def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
@@ -164,7 +161,6 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
     accuracies = utils.AverageMeter()
 
     model.train()
-    old_model=model
     num_batches = int(num_train/args.batch_size)
     arr1 = np.arange(num_train)
     arr2 = np.arange(num_train)
@@ -219,20 +215,20 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
  
         #####compute stochastic gradients#######
 
-        old_model = model 
-
+ 
         output = model(B1_var)
         acc = utils.accuracy(output.data, Y1_var) 
-        weighted_loss, loss = weighted_criterion(output, Y1_var,criterion,weight)
+        weighted_loss = weighted_criterion(output, Y1_var,criterion,weight)
+        loss = criterion(output, Y1_var)
 
         loss_r = 0
         for parameter in model.parameters():
             loss_r += torch.sum(parameter ** 2)
         loss = loss + args.weight_decay * loss_r
-        weighted_loss =   weighted_loss +args.weight_decay * loss_r
+        weighted_loss =   weighted_loss + args.weight_decay * loss_r
        
         optimizer.zero_grad()
-        weighted_loss.backward()
+        loss.backward()
         optimizer.step()
 
         losses.update(loss.item(), B1.size(0))
