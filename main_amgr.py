@@ -221,6 +221,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
 
  
         output = model(B1_var)
+        output.to(device)
         acc = utils.accuracy(output.data, Y1_var) 
         loss = criterion(output, Y1_var)
         # print("---loss is %s   ---" % loss)
