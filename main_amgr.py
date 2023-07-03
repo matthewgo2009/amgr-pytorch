@@ -35,7 +35,6 @@ def main():
     
     ####create z initialization#########
     z = np.zeros(num_train)
-    weight = torch.ones(len(B1),device=device)/len(B1)
 
     gamma = 0.3
     eta = 0.01
@@ -74,7 +73,7 @@ def main():
     val_loss, val_acc = 0, 0
     for epoch in loop:
          # train for one epoch
-        train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch,weight)
+        train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch)
         writer.add_scalar("train/acc", train_acc, epoch)
         writer.add_scalar("train/loss", train_loss, epoch)
         lr_scheduler.step()
@@ -155,7 +154,7 @@ def weighted_criterion(outputs,labels,criterion,weight):
     return weighted_loss 
 
 
-def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch,weight):
+def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
     """ Run one train epoch """
     losses = utils.AverageMeter()
     accuracies = utils.AverageMeter()
@@ -193,11 +192,11 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch,wei
         B2_var = B2.to(device)
         Y2_var = Y2
  
-        # print("---weight is on   ---")
-        # print(weight.get_device())
+        weight = torch.ones(len(B1))
         #####compute weights (exp of sum) #######
         if epoch<=700:          #do 700 epoch standard ERM training
-            pass
+            for i in range(len(B1)):
+                weight[i] = math.exp(-z[B1_idx[i]])
         elif epoch%50==0 :                                # update weights every 100 epochs
             for i in range(len(B1)):
                 x_i,y_i = B1[i], Y1[i]
