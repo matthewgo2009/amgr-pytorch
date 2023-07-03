@@ -35,7 +35,8 @@ def main():
     
     ####create z initialization#########
     z = np.zeros(num_train)
-    
+    weight = torch.ones(len(B1),device=device)/len(B1)
+
     gamma = 0.3
     eta = 0.01
 
@@ -72,9 +73,8 @@ def main():
     loop = tqdm(range(0, args.epochs), total=args.epochs, leave=False)
     val_loss, val_acc = 0, 0
     for epoch in loop:
-        print(epoch)
-        # train for one epoch
-        train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch)
+         # train for one epoch
+        train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch,weight)
         writer.add_scalar("train/acc", train_acc, epoch)
         writer.add_scalar("train/loss", train_loss, epoch)
         lr_scheduler.step()
@@ -155,7 +155,7 @@ def weighted_criterion(outputs,labels,criterion,weight):
     return weighted_loss 
 
 
-def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
+def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch,weight):
     """ Run one train epoch """
     losses = utils.AverageMeter()
     accuracies = utils.AverageMeter()
@@ -167,8 +167,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
  
     np.random.shuffle(arr1)
     np.random.shuffle(arr2)
-    print("---number of batches is %s ---" % num_batches)
-
+ 
     for t in range(num_batches):
         # start_time = time.time()
 
@@ -194,22 +193,20 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         B2_var = B2.to(device)
         Y2_var = Y2
  
-        weight = torch.ones(len(B1),device=device)/len(B1)
         # print("---weight is on   ---")
         # print(weight.get_device())
         #####compute weights (exp of sum) #######
-        if epoch%300!=0 or epoch==0:          #do 300 epoch standard ERM training
+        if epoch<=700:          #do 700 epoch standard ERM training
             pass
-        else:
+        elif epoch%50==0 :                                # update weights every 100 epochs
             for i in range(len(B1)):
-                if epoch%10==0:  #update z
-                    x_i,y_i = B1[i], Y1[i]
-                    grad_i = compute_grad(x_i, y_i, criterion, model)
-                    corr = 0
-                    for j in range(int(len(B2)*0.05)):
-                        x_j,y_j = B2[j], Y2[j]
-                        corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
-                    z[B1_idx[i]] = corr
+                x_i,y_i = B1[i], Y1[i]
+                grad_i = compute_grad(x_i, y_i, criterion, model)
+                corr = 0
+                for j in range(int(len(B2)*0.05)):
+                    x_j,y_j = B2[j], Y2[j]
+                    corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
+                z[B1_idx[i]] = corr
                 weight[i] = math.exp(-z[B1_idx[i]])
              
         weight = weight.detach()
