@@ -192,7 +192,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         B2_var = B2.to(device)
         Y2_var = Y2
  
-        weight = torch.ones(len(B1))
+        weight = torch.ones(len(B1),device = device)
         #####compute weights (exp of sum) #######
         if epoch<=700:          #do 700 epoch standard ERM training
             for i in range(len(B1)):
