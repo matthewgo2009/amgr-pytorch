@@ -206,6 +206,9 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
                     corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
                 z[B1_idx[i]] = corr
                 weight[i] = math.exp(-z[B1_idx[i]])
+        else:          #do 700 epoch standard ERM training
+            for i in range(len(B1)):
+                weight[i] = math.exp(-z[B1_idx[i]])
              
         weight = weight.detach()
         weight = weight/weight.sum()
