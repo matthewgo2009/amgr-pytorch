@@ -36,9 +36,8 @@ def main():
     ####create z initialization#########
     z = np.zeros(num_train)
 
-    gamma = 0.3
-    eta = 0.01
-
+    gamma = args.gamma
+ 
     if args.logit_adj_post:
         if os.path.isfile(os.path.join(model_loc, "model.th")):
             print("=> loading pretrained model ")
