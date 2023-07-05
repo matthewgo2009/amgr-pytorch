@@ -104,7 +104,7 @@ def log_folders(args):
     log_dir = 'logs'
     exp_dir = 'dataset_{}_amgr_{}_gamma_{}'.format(
         args.dataset,
-        args.logit_adj_train,
+        args.amgr,
         args.gamma)
     exp_loc = os.path.join(log_dir, exp_dir)
     model_loc = os.path.join(exp_loc, "model_weights")
