@@ -110,7 +110,7 @@ def compute_grad(sample, target, criterion, model):
     prediction = model(sample)
     loss = criterion(prediction, target)
 
-    grad = torch.autograd.grad(loss,  model.parameters())
+    grad = torch.autograd.grad(loss,  model.parameters()[-1])
     # print("---compute_grad runtime is %s seconds ---" % (time.time() - start_time))
 
  
@@ -134,7 +134,7 @@ def q(model,criterion,grad_i,x_j,y_j,gamma):
     #     corr = corr + cos( grad_i[arr[i]].flatten(), grad_j[arr[i]].flatten() )
     with torch.no_grad():
 
-        corr = cos( grad_i[-1].flatten(), grad_j[-1].flatten() )
+        corr = cos( grad_i.flatten(), grad_j.flatten() )
     # print("---q runtime is %s seconds ---" % (time.time() - start_time))
 
     return max( corr-gamma ,0 )
@@ -193,7 +193,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
  
         weight = torch.ones(len(B1),device = device)
         #####compute weights (exp of sum) #######
-        if epoch<=700:          #do 700 epoch standard ERM training
+        if epoch<=0:          #do 700 epoch standard ERM training
             for i in range(len(B1)):
                 weight[i] = math.exp(-z[B1_idx[i]])
         elif epoch%50==0 :                                # update weights every 100 epochs
