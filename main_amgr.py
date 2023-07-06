@@ -112,8 +112,7 @@ def compute_grad(sample, target, criterion, model):
 
     grad = torch.autograd.grad(loss,  list(model.parameters())[-1] )
     # print("---compute_grad runtime is %s seconds ---" % (time.time() - start_time))
-    print(grad[0])
- 
+  
     return grad
 
 def q(model,criterion,grad_i,x_j,y_j,gamma):
@@ -134,7 +133,7 @@ def q(model,criterion,grad_i,x_j,y_j,gamma):
     #     corr = corr + cos( grad_i[arr[i]].flatten(), grad_j[arr[i]].flatten() )
     with torch.no_grad():
 
-        corr = cos( grad_i.flatten(), grad_j.flatten() )
+        corr = cos( grad_i[-1].flatten(), grad_j[-1].flatten() )
     # print("---q runtime is %s seconds ---" % (time.time() - start_time))
 
     return max( corr-gamma ,0 )
