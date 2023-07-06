@@ -110,7 +110,7 @@ def compute_grad(sample, target, criterion, model):
     prediction = model(sample)
     loss = criterion(prediction, target)
 
-    grad = torch.autograd.grad(loss,  model.parameters()[-1])
+    grad = torch.autograd.grad(loss,  list(model.parameters())[-1] )
     # print("---compute_grad runtime is %s seconds ---" % (time.time() - start_time))
 
  
@@ -196,7 +196,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         if epoch<=0:          #do 700 epoch standard ERM training
             for i in range(len(B1)):
                 weight[i] = math.exp(-z[B1_idx[i]])
-        elif epoch%50==0 :                                # update weights every 100 epochs
+        elif epoch%1==0 :                                # update weights every 100 epochs
             for i in range(len(B1)):
                 x_i,y_i = B1[i], Y1[i]
                 grad_i = compute_grad(x_i, y_i, criterion, model)
