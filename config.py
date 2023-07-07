@@ -22,7 +22,7 @@ def get_arguments():
     parser.add_argument('--logit_adj_train', help='adjust logits in trainingc', type=int, default=0, choices=[0, 1])
     parser.add_argument('--amgr', help='adaptative majority gradient reweighting', type=int, default=0, choices=[0, 1])
     parser.add_argument('--rc', help='representation correction', type=int, default=0, choices=[0, 1])
-    parser.add_argument('--gamma', help='threshold for gradient similarity', type=int, default=0.7, choices=[0.1, 0.3,0.5,0.7,0.9])
+    parser.add_argument('--gamma', help='threshold for gradient similarity', type=float, default=0.7, choices=[0.1, 0.3,0.5,0.7,0.9])
     parser.add_argument('--tro_train', default=1.0, type=float, help='tro for logit adj train')
     parser.add_argument('--update_gap', default=50, type=int, help='updating weights gap')
 
