@@ -25,5 +25,6 @@ def get_arguments():
     parser.add_argument('--gamma', help='threshold for gradient similarity', type=float, default=0.7, choices=[0.1, 0.3,0.5,0.7,0.9])
     parser.add_argument('--tro_train', default=1.0, type=float, help='tro for logit adj train')
     parser.add_argument('--update_gap', default=50, type=int, help='updating weights gap')
+    parser.add_argument('--measure', default=0, type=int, help='0 for gradient and 1 for embedding',choices=[0,1])
 
     return parser

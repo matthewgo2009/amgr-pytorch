@@ -137,6 +137,15 @@ def q(model,criterion,grad_i,x_j,y_j,gamma):
     # print("---q runtime is %s seconds ---" % (time.time() - start_time))
 
     return max( corr-gamma ,0 )
+    
+def embedding_corr(model, output_i, x_j,gamma):
+    cos = torch.nn.CosineSimilarity(dim=0)
+    x_j = x_j.unsqueeze(0)  # prepend batch dimension for processing
+    output = model(x_j)
+    output_j = output[-1]
+    corr = cos(output_i.flatten(), output_j.flatten())
+    return max( corr-gamma ,0 ) 
+
 
 
 def weighted_criterion(outputs,labels,criterion,weight):
@@ -203,7 +212,12 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
                 corr = 0
                 for j in range(int(len(B2)*0.05)):
                     x_j,y_j = B2[j], Y2[j]
-                    corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
+                    if measure == 0:
+                        corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
+                    else:
+                        x_i = x_i.unsqueeze(0)  # prepend batch dimension for processing
+                        output_i = model(x_i)[-1]
+                        corr = corr + embedding_corr(model,output_i,x_j,gamma)
                 z[B1_idx[i]] = corr
                 weight[i] = math.exp(-z[B1_idx[i]])
         else:          #do 700 epoch standard ERM training
@@ -219,10 +233,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         output = model(B1_var)
         acc = utils.accuracy(output.data, Y1_var) 
         loss = criterion(output, Y1_var)
-        # print("---weight is on   ---")
-        # print(weight.get_device())
-        # print("---loss is on   ---")
-        # print(loss.get_device())
+       
         
 
         weighted_loss = torch.inner(loss,weight)
