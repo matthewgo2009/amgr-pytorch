@@ -137,7 +137,7 @@ def q(model,criterion,grad_i,x_j,y_j,gamma):
     # print("---q runtime is %s seconds ---" % (time.time() - start_time))
 
     return max( corr-gamma ,0 )
-    
+
 def embedding_corr(model, output_i, x_j,gamma):
     cos = torch.nn.CosineSimilarity(dim=0)
     x_j = x_j.unsqueeze(0)  # prepend batch dimension for processing
@@ -199,7 +199,9 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
         Y2 = Y2.to(device)
         B2_var = B2.to(device)
         Y2_var = Y2
- 
+        
+
+        measure = args.measure
         weight = torch.ones(len(B1),device = device)
         #####compute weights (exp of sum) #######
         if epoch<=0:          #do 700 epoch standard ERM training
