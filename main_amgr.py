@@ -26,7 +26,9 @@ def main():
     """Main script"""
 
     assert not (args.logit_adj_post and args.logit_adj_train)
-    train_dataset, val_loader, num_train = utils.get_loaders(args)
+    # train_dataset, val_loader, num_train = utils.get_loaders(args)
+    train_loader, val_loader, num_train= utils.get_loaders_v2(args)
+
     num_class = len(args.class_names)
     model = torch.nn.DataParallel(resnet32(num_classes=num_class))
     model = model.to(device)
@@ -72,7 +74,8 @@ def main():
     val_loss, val_acc = 0, 0
     for epoch in loop:
          # train for one epoch
-        train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch)
+        # train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch)
+        train_loss, train_acc = train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epoch)
         writer.add_scalar("train/acc", train_acc, epoch)
         writer.add_scalar("train/loss", train_loss, epoch)
         lr_scheduler.step()
@@ -114,6 +117,20 @@ def compute_grad(sample, target, criterion, model):
     # print("---compute_grad runtime is %s seconds ---" % (time.time() - start_time))
  
     return grad
+
+
+
+def compute_loss(params, partial_para, buffers, sample, target,criterion):
+    batch = sample.unsqueeze(0)
+    targets = target.unsqueeze(0)
+
+    predictions = functional_call(model, (params, buffers), (batch,))
+    loss = criterion(predictions, targets)
+    return loss
+
+
+
+
 
 def q(model,criterion,grad_i,x_j,y_j,gamma):
     # start_time = time.time()
@@ -161,6 +178,49 @@ def weighted_criterion(outputs,labels,criterion,weight):
     return weighted_loss 
 
 
+def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epoch):
+    """ Run one train epoch """
+
+    losses = utils.AverageMeter()
+    accuracies = utils.AverageMeter()
+
+    model.train()
+    
+
+    for _, (inputs, target) in enumerate(train_loader):
+        target = target.to(device)
+        input_var = inputs.to(device)
+        target_var = target
+
+        params = {k: v.detach() for k, v in model.named_parameters()}
+        buffers = {k: v.detach() for k, v in model.named_buffers()}
+        partial_para = params[-1]
+        ft_compute_grad = grad(compute_loss, 1)
+        ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0))
+        ft_per_sample_grads = ft_compute_sample_grad(params, partial_para, buffers, input_var, target_var)
+        print(ft_per_sample_grads.shape)
+
+        output = model(input_var)
+        acc = utils.accuracy(output.data, target)
+
+        loss = criterion(output, target_var)
+
+        loss_r = 0
+        for parameter in model.parameters():
+            loss_r += torch.sum(parameter ** 2)
+        loss = loss + args.weight_decay * loss_r
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        losses.update(loss.item(), inputs.size(0))
+        accuracies.update(acc, inputs.size(0))
+
+    return losses.avg, accuracies.avg
+
+
+
 def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
     """ Run one train epoch """
     losses = utils.AverageMeter()
@@ -203,7 +263,7 @@ def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
 
         measure = args.measure
         weight = torch.ones(len(B1),device = device)
-        #####compute weights (exp of sum) #######
+        ##### compute weights (exp of sum) #######
         if epoch<=0:          #do 700 epoch standard ERM training
             for i in range(len(B1)):
                 weight[i] = math.exp(-z[B1_idx[i]])

@@ -165,3 +165,35 @@ def get_loaders(args):
     args.scheduler_steps = train_dataset.get_scheduler()
 
     return train_dataset, test_loader,num_train
+
+
+
+def get_loaders_v2(args):
+    """loads the dataset"""
+
+    dataset = DATASET_MAPPINGS[args.dataset]
+    train_dataset = dataset(root=args.data_home,
+                            train=True,
+                            transform=TRAIN_TRANSFORMS[args.dataset],
+                            download=True)
+    num_train = len(train_dataset)
+
+    test_dataset = dataset(root=args.data_home,
+                           train=False,
+                           transform=TEST_TRANSFORMS[args.dataset])
+
+    train_loader = DataLoader(dataset=train_dataset,
+                              batch_size=args.batch_size,
+                              shuffle=True,
+                              num_workers=args.num_workers)
+
+    test_loader = DataLoader(dataset=test_dataset,
+                             batch_size=args.batch_size,
+                             shuffle=False,
+                             num_workers=args.num_workers)
+
+    args.class_names = train_dataset.get_classes()
+    args.epochs = train_dataset.get_epoch()
+    args.scheduler_steps = train_dataset.get_scheduler()
+
+    return train_loader, test_loader, num_train
