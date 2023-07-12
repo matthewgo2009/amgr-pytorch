@@ -13,6 +13,7 @@ from config import get_arguments
 import numpy as np
 import math
 import time
+from torch.func import functional_call, vmap, grad
 
 parser = get_arguments()
 args = parser.parse_args()
@@ -120,7 +121,7 @@ def compute_grad(sample, target, criterion, model):
 
 
 
-def compute_loss(params, partial_para, buffers, sample, target,criterion):
+def compute_loss(params,  buffers, sample, target,criterion):
     batch = sample.unsqueeze(0)
     targets = target.unsqueeze(0)
 
@@ -197,10 +198,10 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         # for n, p in model.named_parameters():
         #     print('Parameter name:', n)
 
-        partial_para = params[module.linear.weight]
+        # partial_para = params[module.linear.weight]
         ft_compute_grad = grad(compute_loss, 1)
         ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0))
-        ft_per_sample_grads = ft_compute_sample_grad(params, partial_para, buffers, input_var, target_var)
+        ft_per_sample_grads = ft_compute_sample_grad(params,   buffers, input_var, target_var)
         print(ft_per_sample_grads.shape)
 
         output = model(input_var)
