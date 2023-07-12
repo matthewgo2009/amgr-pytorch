@@ -194,10 +194,10 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
 
         params = {k: v.detach() for k, v in model.named_parameters()}
         buffers = {k: v.detach() for k, v in model.named_buffers()}
-        for n, p in model.named_parameters():
-            print('Parameter name:', n)
-                 
-        partial_para = params[-1]
+        # for n, p in model.named_parameters():
+        #     print('Parameter name:', n)
+
+        partial_para = params[module.linear.weight]
         ft_compute_grad = grad(compute_loss, 1)
         ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0))
         ft_per_sample_grads = ft_compute_sample_grad(params, partial_para, buffers, input_var, target_var)
