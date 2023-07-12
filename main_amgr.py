@@ -196,8 +196,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         buffers = {k: v.detach() for k, v in model.named_buffers()}
         for n, p in model.named_parameters():
             print('Parameter name:', n)
-            print(p.data)    
-                
+                 
         partial_para = params[-1]
         ft_compute_grad = grad(compute_loss, 1)
         ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0))
