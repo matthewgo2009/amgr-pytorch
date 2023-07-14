@@ -13,6 +13,7 @@ from config import get_arguments
 import numpy as np
 import math
 import time
+import torch.nn.functional as F
 from torch.func import functional_call, vmap, grad
 
 parser = get_arguments()
@@ -126,7 +127,7 @@ def compute_loss(params,  buffers, sample, target,model,criterion):
     targets = target.unsqueeze(0)
  
     predictions = functional_call(model, (params, buffers), (batch,))
-    loss = criterion(predictions, targets)
+    loss = F.nll_loss(predictions, targets)
     return loss
 
 
@@ -201,6 +202,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
       
         
         ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target, model,criterion)
+
         for gradient in ft_per_sample_grads.values():
             print(torch.is_tensor(gradient))
 
