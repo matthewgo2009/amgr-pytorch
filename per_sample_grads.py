@@ -60,6 +60,7 @@ batch_size = 64
 data = torch.randn(batch_size, 1, 28, 28, device=device)
 
 targets = torch.randint(10, (64,), device=device)
+print(targets.size())
 
 ######################################################################
 # In regular model training, one would forward the minibatch through the model,
