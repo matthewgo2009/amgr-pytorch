@@ -204,7 +204,7 @@ def get_perf(first, first_descriptor, second, second_descriptor):
 from torch.utils.benchmark import Timer
 
 without_vmap = Timer(stmt="compute_sample_grads(data, targets)", globals=globals())
-with_vmap = Timer(stmt="ft_compute_sample_grad(params, buffers, data, targets)",globals=globals())
+with_vmap = Timer(stmt="ft_compute_sample_grad(params, buffers, data, targets,model,loss_fn)",globals=globals())
 no_vmap_timing = without_vmap.timeit(100)
 with_vmap_timing = with_vmap.timeit(100)
 
