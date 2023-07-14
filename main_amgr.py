@@ -121,9 +121,10 @@ def compute_grad(sample, target, criterion, model):
 
 
 
-def compute_loss(params,  buffers, sample, target,criterion):
+def compute_loss(params,  buffers, sample, target):
     batch = sample.unsqueeze(0)
     targets = target.unsqueeze(0)
+    criterion = nn.CrossEntropyLoss(reduction='none').to(device)
 
     predictions = functional_call(model, (params, buffers), (batch,))
     loss = criterion(predictions, targets)
