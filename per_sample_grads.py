@@ -135,7 +135,7 @@ buffers = {k: v.detach() for k, v in model.named_buffers()}
 # Note - because the model was originally written to handle batches, we’ll
 # use ``torch.unsqueeze`` to add a batch dimension.
 
-def compute_loss(params, buffers, sample, target):
+def compute_loss(params, buffers, sample, target,model,loss_fn):
     batch = sample.unsqueeze(0)
     targets = target.unsqueeze(0)
 
@@ -158,12 +158,12 @@ ft_compute_grad = grad(compute_loss)
 # the 0th dimension of the data and targets, and use the same ``params`` and
 # buffers for each.
 
-ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0))
+ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0,None,None))
 
 ######################################################################
 # Finally, let's used our transformed function to compute per-sample-gradients:
 
-ft_per_sample_grads = ft_compute_sample_grad(params, buffers, data, targets)
+ft_per_sample_grads = ft_compute_sample_grad(params, buffers, data, targets,model,loss_fn)
 
 ######################################################################
 # we can double check that the results using ``grad`` and ``vmap`` match the
