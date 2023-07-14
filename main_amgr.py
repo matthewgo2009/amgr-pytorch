@@ -121,7 +121,7 @@ def compute_grad(sample, target, criterion, model):
 
 
 
-def compute_loss(params,  buffers, sample, target):
+def compute_loss(params,  buffers, sample, target,model):
     batch = sample.unsqueeze(0)
     targets = target.unsqueeze(0)
     criterion = nn.CrossEntropyLoss(reduction='none').to(device)
@@ -201,8 +201,8 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
 
         # partial_para = params[module.linear.weight]
         ft_compute_grad = grad(compute_loss)
-        ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0))
-        ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target_var)
+        ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0,None))
+        ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target_var,model)
         for gradient in ft_per_sample_grads.values():
             print(torch.is_tensor(gradient))
 
