@@ -76,7 +76,7 @@ def main():
     for epoch in loop:
          # train for one epoch
         # train_loss, train_acc = train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch)
-        train_loss, train_acc = train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epoch)
+        train_loss, train_acc = train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epoch,compute_loss)
         writer.add_scalar("train/acc", train_acc, epoch)
         writer.add_scalar("train/loss", train_loss, epoch)
         lr_scheduler.step()
@@ -179,25 +179,27 @@ def weighted_criterion(outputs,labels,criterion,weight):
     return weighted_loss 
 
 
-def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epoch):
+def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epoch,compute_loss):
     """ Run one train epoch """
 
     losses = utils.AverageMeter()
     accuracies = utils.AverageMeter()
 
     model.train()
-    
+    ft_compute_grad = grad(compute_loss)
+    ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0, None,None))
 
     for _, (inputs, target) in enumerate(train_loader):
         target = target.to(device)
         input_var = inputs.to(device)
         target_var = target
+        print(target.size())
+        print()
 
         params = {k: v.detach() for k, v in model.named_parameters()}
         buffers = {k: v.detach() for k, v in model.named_buffers()}
       
-        ft_compute_grad = grad(compute_loss)
-        ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0, None,None))
+        
         ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target, model,criterion)
         for gradient in ft_per_sample_grads.values():
             print(torch.is_tensor(gradient))
