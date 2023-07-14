@@ -53,7 +53,7 @@ def loss_fn(predictions, targets):
 # Let’s generate a batch of dummy data and pretend that we’re working with an MNIST dataset.
 # The dummy images are 28 by 28 and we use a minibatch of size 64.
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = 'cpu'
 
 num_models = 10
 batch_size = 64
@@ -170,7 +170,8 @@ ft_per_sample_grads = ft_compute_sample_grad(params, buffers, data, targets)
 # results of hand processing each one individually:
 
 for per_sample_grad, ft_per_sample_grad in zip(per_sample_grads, ft_per_sample_grads.values()):
-    assert torch.allclose(per_sample_grad, ft_per_sample_grad, atol=3e-2, rtol=1e-5)
+    print(ft_compute_sample_grad.shape())
+    assert torch.allclose(per_sample_grad, ft_per_sample_grad, atol=3e-3, rtol=1e-5)
 
 ######################################################################
 # A quick note: there are limitations around what types of functions can be
