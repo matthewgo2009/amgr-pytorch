@@ -202,7 +202,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         # partial_para = params[module.linear.weight]
         ft_compute_grad = grad(compute_loss)
         ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0))
-        ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target_var,criterion)
+        ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target_var)
         for gradient in ft_per_sample_grads.values():
             print(torch.is_tensor(gradient))
 
