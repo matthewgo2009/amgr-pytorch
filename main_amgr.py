@@ -212,7 +212,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             if i == 0:
                 grads = grad
             else:
-                grads = torch.stack([grads,grad],dim=0)
+                grads = torch.cat([grads,grad],dim=0)
         print(grads.size())
 
         output = model(input_var)
