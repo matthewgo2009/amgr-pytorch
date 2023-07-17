@@ -207,7 +207,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             data,label = input_var[i],target_var[i]
             grad = compute_grad(data, label, criterion, model)
 
-            grad = grad[0].flatten()
+            grad = grad[0].flatten().unsqueeze(0)
             print(grad.size())
             if i == 0:
                 grads = grad
