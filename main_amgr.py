@@ -214,7 +214,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         grads_t = torch.transpose(grads, 0, 1)
  
         gram = torch.matmul(grads,grads_t) 
-        gram = F.relu(torch.sub(gram - gamma))
+        gram = F.relu(torch.sub(gram,gamma))
         weights = torch.sum(gram, 1)
         
         weights = F.softmax(-weights)
