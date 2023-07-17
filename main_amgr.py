@@ -187,8 +187,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
     accuracies = utils.AverageMeter()
 
     model.train()
-    ft_compute_grad = grad(compute_loss)
-    ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0, None, None))
+     
 
     for _, (inputs, target) in enumerate(train_loader):
         target = target.to(device)
