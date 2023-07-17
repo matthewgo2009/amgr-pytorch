@@ -196,17 +196,16 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         target_var = target
         num_models = 10
         batch_size = 64
-        data = torch.randn(batch_size, 1, 28, 28, device=device)
+        data = torch.randn(batch_size, 3, 32, 32, device=device)
 
         targets = torch.randint(10, (64,), device=device)
  
-######################################################################
-# In regular model training, one would forward the minibatch through the model,
-# and then call .backward() to compute gradients.  This would generate an
-# 'average' gradient of the entire mini-batch:
+    ######################################################################
+    # In regular model training, one would forward the minibatch through the model,
+    # and then call .backward() to compute gradients.  This would generate an
+    # 'average' gradient of the entire mini-batch:
 
-        model = SimpleCNN().to(device=device)
-
+ 
         params = {k: v.detach() for k, v in model.named_parameters()}
         buffers = {k: v.detach() for k, v in model.named_buffers()}
       
