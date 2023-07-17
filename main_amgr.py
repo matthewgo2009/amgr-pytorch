@@ -127,7 +127,7 @@ def compute_loss(params,  buffers, sample, target,model,criterion):
     targets = target.unsqueeze(0)
  
     predictions = functional_call(model, (params, buffers), (batch,))
-    loss = F.nll_loss(predictions, targets)
+    loss = criterion(predictions, targets)
     return loss
 
 
@@ -188,20 +188,30 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
 
     model.train()
     ft_compute_grad = grad(compute_loss)
-    ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0, None,None))
+    ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0, None, None))
 
     for _, (inputs, target) in enumerate(train_loader):
         target = target.to(device)
         input_var = inputs.to(device)
         target_var = target
-        print(target.size())
-        print(input_var.size())
+        num_models = 10
+        batch_size = 64
+        data = torch.randn(batch_size, 1, 28, 28, device=device)
+
+        targets = torch.randint(10, (64,), device=device)
+ 
+######################################################################
+# In regular model training, one would forward the minibatch through the model,
+# and then call .backward() to compute gradients.  This would generate an
+# 'average' gradient of the entire mini-batch:
+
+        model = SimpleCNN().to(device=device)
 
         params = {k: v.detach() for k, v in model.named_parameters()}
         buffers = {k: v.detach() for k, v in model.named_buffers()}
       
         
-        ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target, model,criterion)
+        ft_per_sample_grads = ft_compute_sample_grad(params, buffers, data, targets, model,criterion)
 
         for gradient in ft_per_sample_grads.values():
             print(torch.is_tensor(gradient))
