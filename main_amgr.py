@@ -212,18 +212,20 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             else:
                 grads = torch.cat([grads,grad],dim=0)
         grads_t = torch.transpose(grads, 0, 1)
-
-        print(grads.size())
-        print(grads_t.size())
+ 
         gram = torch.matmul(grads,grads_t) 
-        gram = F.relu(gram)
+        gram = F.relu(torch.sub(gram - gamma))
         weights = torch.sum(gram, 1)
-        print(weights.size())
+        
+        weights = F.softmax(-weights)
+
+
 
         output = model(input_var)
         acc = utils.accuracy(output.data, target)
 
         loss = criterion(output, target_var)
+        weighted_loss = torch.inner(loss,weight)
 
         loss_r = 0
         for parameter in model.parameters():
@@ -231,7 +233,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         loss = loss + args.weight_decay * loss_r
 
         optimizer.zero_grad()
-        loss.backward()
+        weighted_loss.backward()
         optimizer.step()
 
         losses.update(loss.item(), inputs.size(0))
