@@ -208,12 +208,15 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             grad = compute_grad(data, label, criterion, model)
 
             grad = grad[0].flatten().unsqueeze(0)
-            print(grad.size())
-            if i == 0:
+             if i == 0:
                 grads = grad
             else:
                 grads = torch.cat([grads,grad],dim=0)
-        print(grads.size())
+        
+        gram = torch.mul(grads,torch.transpose(grads, 0, 1)) 
+        gram = nn.ReLU(gram)
+        gram.sum(dim=1)
+        print(gram.size())
 
         output = model(input_var)
         acc = utils.accuracy(output.data, target)
