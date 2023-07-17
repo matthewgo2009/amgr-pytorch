@@ -211,7 +211,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                 grads = grad
             else:
                 grads = torch.cat([grads,grad],dim=0)
-        grads_t = torch.transpose(grads, 0, 1).size()
+        grads_t = torch.transpose(grads, 0, 1)
 
         print(grads.size())
         print(grads_t.size())
