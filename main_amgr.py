@@ -216,7 +216,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         print(grads.size())
         print(grads_t.size())
         gram = torch.matmul(grads,grads_t) 
-        gram = F.ReLU(gram)
+        gram = F.relu(gram)
         gram.sum(dim=1)
         print(gram.size())
 
