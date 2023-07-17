@@ -208,7 +208,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             grad = compute_grad(data, label, criterion, model)
 
             grad = grad[0].flatten().unsqueeze(0)
-             if i == 0:
+            if i == 0:
                 grads = grad
             else:
                 grads = torch.cat([grads,grad],dim=0)
