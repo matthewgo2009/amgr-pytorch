@@ -195,12 +195,8 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         target_var = target
 
 
-         
- 
-    ######################################################################
-    # In regular model training, one would forward the minibatch through the model,
-    # and then call .backward() to compute gradients.  This would generate an
-    # 'average' gradient of the entire mini-batch:
+        start_time = time.time()
+
  
         for i in range(input_var.shape[0]):
             data,label = input_var[i],target_var[i]
@@ -211,6 +207,11 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                 grads = grad
             else:
                 grads = torch.cat([grads,grad],dim=0)
+        print("---minibatch gradient computation runtime is %s seconds ---" % (time.time() - start_time))
+
+
+        start_time = time.time()
+
         grads_t = torch.transpose(grads, 0, 1)
  
         gram = torch.matmul(grads,grads_t) 
@@ -218,8 +219,10 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         weights = torch.sum(gram, 1)
         
         weights = F.softmax(-weights)
+        weights = weights.detach()
+        print("---weights computation runtime is %s seconds ---" % (time.time() - start_time))
 
-
+        print(weights)
 
         output = model(input_var)
         acc = utils.accuracy(output.data, target)
