@@ -195,36 +195,30 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         target_var = target
 
 
-        start_time = time.time()
-
  
-        for i in range(input_var.shape[0]):
-            data,label = input_var[i],target_var[i]
-            grad = compute_grad(data, label, criterion, model)
+        
+        # for i in range(input_var.shape[0]):
+        #     data,label = input_var[i],target_var[i]
+        #     grad = compute_grad(data, label, criterion, model)
 
-            grad = grad[0].flatten().unsqueeze(0)
-            if i == 0:
-                grads = grad
-            else:
-                grads = torch.cat([grads,grad],dim=0)
-        print("---minibatch gradient computation runtime is %s seconds ---" % (time.time() - start_time))
-
-
-        start_time = time.time()
-
-        grads_t = torch.transpose(grads, 0, 1)
+        #     grad = grad[0].flatten().unsqueeze(0)
+        #     if i == 0:
+        #         grads = grad
+        #     else:
+        #         grads = torch.cat([grads,grad],dim=0)
  
-        gram = torch.matmul(grads,grads_t) 
+        output = model(input_var)
+
+        grads_t = torch.transpose(output, 0, 1)
+ 
+        gram = torch.matmul(output,grads_t) 
         gram = F.relu(torch.sub(gram,gamma))
         weights = torch.sum(gram, 1)
         
         weights = F.softmax(-weights)
         weights = weights.detach()
-        print("---weights computation runtime is %s seconds ---" % (time.time() - start_time))
-
-        print(weights)
-
-        output = model(input_var)
+ 
+ 
         acc = utils.accuracy(output.data, target)
 
         loss = criterion(output, target_var)
@@ -235,6 +229,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         for parameter in model.parameters():
             loss_r += torch.sum(parameter ** 2)
         loss = loss + args.weight_decay * loss_r
+        weighted_loss = weighted_loss + args.weight_decay * loss_r
 
         optimizer.zero_grad()
         weighted_loss.backward()
