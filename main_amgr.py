@@ -194,26 +194,26 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         target = target.to(device)
         input_var = inputs.to(device)
         target_var = target
-        num_models = 10
-        batch_size = 64
-        data = torch.randn(batch_size, 3, 32, 32, device=device)
 
-        targets = torch.randint(10, (64,), device=device)
+
+         
  
     ######################################################################
     # In regular model training, one would forward the minibatch through the model,
     # and then call .backward() to compute gradients.  This would generate an
     # 'average' gradient of the entire mini-batch:
+        print(input_var.shape[0])
 
- 
-        params = {k: v.detach() for k, v in model.named_parameters()}
-        buffers = {k: v.detach() for k, v in model.named_buffers()}
-      
-        
-        ft_per_sample_grads = ft_compute_sample_grad(params, buffers, data, targets, model,criterion)
+        for i in range(input_var.shape[0]):
+            data,label = input_var[i],target_var[i]
+            grad = compute_grad(data, label, criterion, model)
 
-        for gradient in ft_per_sample_grads.values():
-            print(torch.is_tensor(gradient))
+            grad = grad.flatten()
+            if i == 0:
+                grads = grad
+            else:
+                grads = torch.stack([grads,grad],dim=0)
+        print(grads.size())
 
         output = model(input_var)
         acc = utils.accuracy(output.data, target)
