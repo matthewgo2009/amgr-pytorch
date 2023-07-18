@@ -133,7 +133,7 @@ def compute_per_sample_gradients(model, x, target,criterion):
     gradients = []
     def hook_function(module, grad_input, grad_output):
         gradients.append(grad_input[0])
-    hook = model.last_layer.register_backward_hook(hook_function)
+    hook = model.linear.register_backward_hook(hook_function)
 
     # Forward pass
     output = model(x)
