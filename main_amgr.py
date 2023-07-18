@@ -107,24 +107,30 @@ def main():
 
 def compute_grad(sample, target, criterion, model):
     # start_time = time.time()
-
-    
-    sample = sample.unsqueeze(0)  # prepend batch dimension for processing
-    target = target.unsqueeze(0)
-
     prediction = model(sample)
     loss = criterion(prediction, target)
 
-    grad = torch.autograd.grad(loss,  list(model.parameters())[-1] )
+    for i in range(input_var.shape[0]):
+        data,label = input_var[i],target_var[i]
+        grad = torch.autograd.grad(loss[i],  list(model.parameters())[-1] )
+
+        grad = grad[0].flatten().unsqueeze(0)
+        if i == 0:
+            grads = grad
+        else:
+            grads = torch.cat([grads,grad],dim=0)
+
     # print("---compute_grad runtime is %s seconds ---" % (time.time() - start_time))
  
-    return grad
+    return grads
 
 
 
 def compute_loss(params,  buffers, sample, target,model,criterion):
     batch = sample.unsqueeze(0)
     targets = target.unsqueeze(0)
+
+
  
     predictions = functional_call(model, (params, buffers), (batch,))
     loss = criterion(predictions, targets)
@@ -197,21 +203,13 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
 
  
         
-        # for i in range(input_var.shape[0]):
-        #     data,label = input_var[i],target_var[i]
-        #     grad = compute_grad(data, label, criterion, model)
-
-        #     grad = grad[0].flatten().unsqueeze(0)
-        #     if i == 0:
-        #         grads = grad
-        #     else:
-        #         grads = torch.cat([grads,grad],dim=0)
+        grads = compute_grad(input_var, target, criterion, model)
  
         output = model(input_var)
 
-        grads_t = torch.transpose(output, 0, 1)
+        grads_t = torch.transpose(grads, 0, 1)
  
-        gram = torch.matmul(output,grads_t) 
+        gram = torch.matmul(grads,grads_t) 
         gram = F.relu(torch.sub(gram,gamma))
         weights = torch.sum(gram, 1)
         
