@@ -112,7 +112,7 @@ def compute_grad(sample, target, criterion, model):
 
     for i in range(sample.shape[0]):
         data,label = sample[i],target[i]
-        grad = torch.autograd.grad(loss[i],  list(model.parameters())[-1] )
+        grad = torch.autograd.grad(loss[i],  list(model.parameters())[-1],retain_graph=True )
 
         grad = grad[0].flatten().unsqueeze(0)
         if i == 0:
