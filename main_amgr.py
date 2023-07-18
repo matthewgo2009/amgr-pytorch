@@ -111,7 +111,7 @@ def compute_grad(sample, target, criterion, model):
     loss = criterion(prediction, target)
 
     for i in range(sample.shape[0]):
-        data,label = sample[i],target_var[i]
+        data,label = sample[i],target[i]
         grad = torch.autograd.grad(loss[i],  list(model.parameters())[-1] )
 
         grad = grad[0].flatten().unsqueeze(0)
@@ -205,7 +205,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         start_time = time.time()
 
         grads = compute_grad(input_var, target, criterion, model)
-        
+
         print("---weighted_criterion runtime is %s seconds ---" % (time.time() - start_time))
 
         output = model(input_var)
