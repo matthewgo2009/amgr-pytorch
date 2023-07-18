@@ -125,6 +125,33 @@ def compute_grad(sample, target, criterion, model):
     return grads
 
 
+def compute_per_sample_gradients(model, x, target,criterion):
+    # Ensure model is in training mode
+    model.train()
+
+    # Register hook on the last_layer of the model
+    gradients = []
+    def hook_function(module, grad_input, grad_output):
+        gradients.append(grad_input[0])
+    hook = model.last_layer.register_backward_hook(hook_function)
+
+    # Forward pass
+    output = model(x)
+
+    # Compute the loss
+    loss = criterion(output, target)
+
+    # Backward pass
+    model.zero_grad()
+    for single_loss in loss.unbind():
+        single_loss.backward(retain_graph=True)
+
+    # Remove the hook
+    hook.remove()
+
+    # Now, gradients holds the per-sample gradients of the weights in the last_layer
+    return gradients
+
 
 def compute_loss(params,  buffers, sample, target,model,criterion):
     batch = sample.unsqueeze(0)
@@ -204,10 +231,10 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
  
         start_time = time.time()
 
-        grads = compute_grad(input_var, target, criterion, model)
-
+        # grads = compute_grad(input_var, target, criterion, model)
+        grads =  compute_per_sample_gradients(model, input_var, target_var,criterion)
         print("---weighted_criterion runtime is %s seconds ---" % (time.time() - start_time))
-
+        print(len(grads))
         output = model(input_var)
 
         grads_t = torch.transpose(grads, 0, 1)
