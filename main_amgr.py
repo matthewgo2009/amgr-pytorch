@@ -32,8 +32,8 @@ def main():
     train_loader, val_loader, num_train= utils.get_loaders_v2(args)
 
     num_class = len(args.class_names)
-    # model = torch.nn.DataParallel(resnet32(num_classes=num_class))
-    model = resnet32(num_classes=num_class)
+    model = torch.nn.DataParallel(resnet32(num_classes=num_class))
+    # model = resnet32(num_classes=num_class)
 
     model = model.to(device)
     cudnn.benchmark = True
@@ -230,16 +230,16 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         target_var = target
  
 
-        params = {k: v.detach() for k, v in model.named_parameters()}
-        buffers = {k: v.detach() for k, v in model.named_buffers()}
+        # params = {k: v.detach() for k, v in model.named_parameters()}
+        # buffers = {k: v.detach() for k, v in model.named_buffers()}
  
         start_time = time.time()
 
         # grads = compute_grad(input_var, target, criterion, model)
-        # grads =  compute_per_sample_gradients(model, input_var, target_var,criterion)
-        ft_compute_grad = grad(compute_loss) 
-        ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0,None,None)) 
-        ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target_var, model, criterion)
+        grads = compute_per_sample_gradients(model, input_var, target_var,criterion)
+        # ft_compute_grad = grad(compute_loss) 
+        # ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0,None,None)) 
+        # ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target_var, model, criterion)
 
         print("---weighted_criterion runtime is %s seconds ---" % (time.time() - start_time))
         print(len(grads))
