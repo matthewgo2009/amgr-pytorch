@@ -252,7 +252,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         # params = {k: v.detach() for k, v in model.named_parameters()}
         # buffers = {k: v.detach() for k, v in model.named_buffers()}
  
-        start_time = time.time()
+        # start_time = time.time()
 
         # grads = compute_grad(input_var, target, criterion, model)
         grads = compute_per_sample_gradients(model, input_var, target_var,criterion)
@@ -260,8 +260,8 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         # ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0,None,None)) 
         # ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target_var, model, criterion)
 
-        print("---weighted_criterion runtime is %s seconds ---" % (time.time() - start_time))
-        print(len(grads))
+        # print("---weighted_criterion runtime is %s seconds ---" % (time.time() - start_time))
+        # print(len(grads))
         output = model(input_var)
 
         grads_t = torch.transpose(grads, 0, 1)
