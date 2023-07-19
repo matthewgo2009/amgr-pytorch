@@ -271,6 +271,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         weights = torch.sum(gram, 1)
         
         weights = F.softmax(-weights)
+        print(weights.sum())
         weights = weights.detach()
  
  
