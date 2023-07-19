@@ -160,7 +160,7 @@ def compute_per_sample_gradients(model, x, target,criterion):
     with torch.no_grad():
         features = model(x,layer = 1)
     for i, f in enumerate(features):
-        loss = criterion(model.module.last_layer(f), target)
+        loss = criterion(model.module.linear(f), target)
         grad = torch.autograd.grad(loss,  list(model.parameters())[-1],retain_graph=True )
 
         grad = grad[0].flatten().unsqueeze(0)
