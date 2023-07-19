@@ -129,7 +129,7 @@ def compute_grad(sample, target, criterion, model):
 
 def compute_per_sample_gradients(model, x, target,criterion):
     # Ensure model is in training mode
-    model.train()
+    # model.train()
 
     # Register hook on the last_layer of the model
     gradients = []
