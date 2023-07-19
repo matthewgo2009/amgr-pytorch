@@ -145,7 +145,7 @@ def compute_per_sample_gradients(model, x, target,criterion):
 
     # Backward pass
     model.zero_grad()
-    for single_loss in loss.unbind():
+    for single_loss in loss:
         single_loss.backward(retain_graph=True)
 
     # Remove the hook
