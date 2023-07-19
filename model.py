@@ -91,7 +91,7 @@ class ResNet(nn.Module):
 
         return nn.Sequential(*layers)
 
-    def forward(self, x):
+    def forward(self, x, layer=0):  # when layer = 1, only output last layer feature.
         x = self.padd(x)
         out = self.act(self.bn1(self.conv1(x)))
         out = self.layer1(out)
@@ -100,6 +100,8 @@ class ResNet(nn.Module):
         out = self.bn2(out)
         out = F.avg_pool2d(out, out.size()[3])
         out = out.view(out.size(0), -1)
+        if layer == 1:
+            return out
         out = self.linear(out)
         return out
 

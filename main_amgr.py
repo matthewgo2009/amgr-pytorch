@@ -126,30 +126,48 @@ def compute_grad(sample, target, criterion, model):
  
     return grads
 
+#chatgpt version solution
+# def compute_per_sample_gradients(model, x, target,criterion):
+#     # Ensure model is in training mode
+#     model.train()
 
+#     # Register hook on the last_layer of the model
+#     gradients = []
+#     def hook_function(module, grad_input, grad_output):
+#         gradients.append(grad_input[0])
+#     hook = model.linear.register_backward_hook(hook_function)
+
+#     # Forward pass
+#     output = model(x)
+
+#     # Compute the loss
+#     loss = criterion(output, target)
+
+#     # Backward pass
+#     model.zero_grad()
+#     for single_loss in loss:
+#         single_loss.backward(retain_graph=True)
+
+#     # Remove the hook
+#     hook.remove()
+
+#     # Now, gradients holds the per-sample gradients of the weights in the last_layer
+#     return gradients
+
+# my solution
 def compute_per_sample_gradients(model, x, target,criterion):
-    # Ensure model is in training mode
-    model.train()
 
-    # Register hook on the last_layer of the model
-    gradients = []
-    def hook_function(module, grad_input, grad_output):
-        gradients.append(grad_input[0])
-    hook = model.linear.register_backward_hook(hook_function)
+    with torch.no_grad():
+        features = model(x,layer = 1)
+    for i, f in enumerate(features):
+        loss = criterion(model.module.last_layer(f), target)
+        grad = torch.autograd.grad(loss,  list(model.parameters())[-1],retain_graph=True )
 
-    # Forward pass
-    output = model(x)
-
-    # Compute the loss
-    loss = criterion(output, target)
-
-    # Backward pass
-    model.zero_grad()
-    for single_loss in loss:
-        single_loss.backward(retain_graph=True)
-
-    # Remove the hook
-    hook.remove()
+        grad = grad[0].flatten().unsqueeze(0)
+        if i == 0:
+            grads = grad
+        else:
+            grads = torch.cat([grads,grad],dim=0)
 
     # Now, gradients holds the per-sample gradients of the weights in the last_layer
     return gradients
