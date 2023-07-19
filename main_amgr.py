@@ -32,8 +32,8 @@ def main():
     train_loader, val_loader, num_train= utils.get_loaders_v2(args)
 
     num_class = len(args.class_names)
-    # model = torch.nn.DataParallel(resnet32(num_classes=num_class))
-    model = resnet32(num_classes=num_class)
+    model = torch.nn.DataParallel(resnet32(num_classes=num_class))
+    # model = resnet32(num_classes=num_class)
 
     model = model.to(device)
     cudnn.benchmark = True
