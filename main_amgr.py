@@ -171,7 +171,7 @@ def compute_per_sample_gradients(model, x, target,criterion):
             grads = torch.cat([grads,grad],dim=0)
 
     # Now, gradients holds the per-sample gradients of the weights in the last_layer
-    return gradients
+    return grads
 
 
 def compute_loss(params,  buffers, sample, target,model,criterion):
