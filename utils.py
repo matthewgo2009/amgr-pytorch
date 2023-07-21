@@ -102,12 +102,13 @@ def log_folders(args):
     """logs the folder"""
 
     log_dir = 'logs'
-    exp_dir = 'dataset_{}_amgr_{}_gamma_{}_gap_{}_measure_{}'.format(
+    exp_dir = 'dataset_{}_amgr_{}_gamma_{}_gap_{}_measure_{}_temp_{}'.format(
         args.dataset,
         args.amgr,
         args.gamma,
         args.update_gap,
-        args.measure)
+        args.measure,
+        args.temp)
     exp_loc = os.path.join(log_dir, exp_dir)
     model_loc = os.path.join(exp_loc, "model_weights")
     make_dir(log_dir)
