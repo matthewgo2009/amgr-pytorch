@@ -256,6 +256,8 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
 
         # grads = compute_grad(input_var, target, criterion, model)
         grads = compute_per_sample_gradients(model, input_var, target_var,criterion)
+        if args.norm:
+            grads = F.normalize(grads,p=2.0)
         # ft_compute_grad = grad(compute_loss) 
         # ft_compute_sample_grad = vmap(ft_compute_grad, in_dims=(None, None, 0, 0,None,None)) 
         # ft_per_sample_grads = ft_compute_sample_grad(params, buffers, input_var, target_var, model, criterion)

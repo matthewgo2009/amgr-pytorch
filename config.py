@@ -27,5 +27,7 @@ def get_arguments():
     parser.add_argument('--update_gap', default=50, type=int, help='updating weights gap')
     parser.add_argument('--measure', default=0, type=int, help='0 for gradient and 1 for embedding',choices=[0,1])
     parser.add_argument('--temp', default=10, type=float, help='tempreturen in softmax')
+    parser.add_argument('--norm', default=1, type=int, help='0 for not normalize 1 for normalize', choices=[0,1])
+
 
     return parser
