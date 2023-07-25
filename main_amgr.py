@@ -274,7 +274,20 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         weights = weights/args.temp
         weights = F.softmax(-weights)
         weights = weights.detach()
- 
+        
+        if measure == 1:
+            features = model(x,layer = 1)
+            features = F.normalize(features,p=2.0)
+            features_t = torch.transpose(features, 0, 1)
+            ft_gram = torch.matmul(features,features_t)
+            ft_gram = F.relu(torch.sub(ft_gram,gamma))
+            ft_weights = torch.sum(ft_gram, 1)
+            ft_weights = ft_weights/args.temp
+            ft_weights = F.softmax(-ft_weights)
+            ft_weights = ft_weights.detach()
+            alpha = epoch/1241
+            weights = (1-alpha)*weights + alpha*ft_weights
+            weights.detach()
  
         acc = utils.accuracy(output.data, target)
 
