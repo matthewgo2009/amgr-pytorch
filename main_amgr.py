@@ -275,7 +275,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         weights = F.softmax(-weights)
         weights = weights.detach()
         
-        if measure == 1:
+        if args.measure == 1:
             features = model(x,layer = 1)
             features = F.normalize(features,p=2.0)
             features_t = torch.transpose(features, 0, 1)
