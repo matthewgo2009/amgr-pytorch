@@ -102,11 +102,11 @@ def log_folders(args):
     """logs the folder"""
 
     log_dir = 'logs'
-    exp_dir = 'dataset_{}_amgr_{}_gamma_{}_gap_{}_measure_{}_temp_{}_norm{}'.format(
+    exp_dir = 'dataset_{}_amgr_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}'.format(
         args.dataset,
         args.amgr,
         args.gamma,
-        args.update_gap,
+        args.batch_size,
         args.measure,
         args.temp,
         args.norm)
