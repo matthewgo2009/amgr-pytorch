@@ -267,11 +267,14 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         output = model(input_var)
 
         grads_t = torch.transpose(grads, 0, 1)
- 
+        if args.temp_decay:
+            temp = args.temp*(epoch/100+1)
+        else:
+            temp = args.temp
         gram = torch.matmul(grads,grads_t) 
         gram = F.relu(torch.sub(gram,gamma))
         weights = torch.sum(gram, 1)
-        weights = weights/args.temp
+        weights = weights/temp
         weights = F.softmax(-weights)
         weights = weights.detach()
         
@@ -282,7 +285,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             ft_gram = torch.matmul(features,features_t)
             ft_gram = F.relu(torch.sub(ft_gram,gamma))
             ft_weights = torch.sum(ft_gram, 1)
-            ft_weights = ft_weights/args.temp
+            ft_weights = ft_weights/temp
             ft_weights = F.softmax(-ft_weights)
             ft_weights = ft_weights.detach()
             alpha = epoch/1241
