@@ -157,10 +157,11 @@ def compute_grad(sample, target, criterion, model):
 # my solution
 def compute_per_sample_gradients(model, x, target,criterion):
 
-    with torch.no_grad():
+    with torch.no_grad(): 
         features = model(x,layer = 1)
-    for i, f in enumerate(features):
+    for i, f in enumerate(features): 
         loss = criterion(model.module.linear(f), target[i])
+
         loss = loss.mean()
         grad = torch.autograd.grad(loss,  list(model.parameters())[-1],retain_graph=True )
 
@@ -247,8 +248,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         target = target.to(device)
         input_var = inputs.to(device)
         target_var = target
- 
-
+  
         # params = {k: v.detach() for k, v in model.named_parameters()}
         # buffers = {k: v.detach() for k, v in model.named_buffers()}
  
@@ -265,6 +265,9 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         # print("---weighted_criterion runtime is %s seconds ---" % (time.time() - start_time))
         # print(len(grads))
         output = model(input_var)
+        
+        if args.logit_adj_train:
+            output = output + args.logit_adjustments
 
         grads_t = torch.transpose(grads, 0, 1)
         if args.temp_decay:
