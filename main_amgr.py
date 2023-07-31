@@ -443,6 +443,7 @@ def validate(val_loader, model, criterion):
 
             elif args.logit_adj_train:
                 loss = criterion(output + args.logit_adjustments, target_var)
+            loss = loss.mean()
 
             acc = utils.accuracy(output.data, target)
             losses.update(loss.item(), inputs.size(0))
