@@ -161,8 +161,7 @@ def compute_per_sample_gradients(model, x, target,criterion):
         features = model(x,layer = 1)
     
     for i, f in enumerate(features): 
-        output = model.module.linear(f)
-
+ 
         if args.logit_adj_train:
             loss = criterion(model.module.linear(f)+ args.logit_adjustments, target[i])
         else:
@@ -305,8 +304,6 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         acc = utils.accuracy(output.data, target)
 
         loss = criterion(output, target_var)
-        loss = loss.double()
-        weights = weights.double()
         weighted_loss = torch.inner(loss,weights)
 
         loss=loss.mean()
