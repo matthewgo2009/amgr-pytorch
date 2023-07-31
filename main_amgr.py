@@ -303,6 +303,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
 
         loss = criterion(output, target_var)
         loss = loss.double()
+        weights = weights.double()
         weighted_loss = torch.inner(loss,weights)
 
         loss=loss.mean()
