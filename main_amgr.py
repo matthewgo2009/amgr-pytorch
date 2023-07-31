@@ -64,7 +64,7 @@ def main():
 
         return
 
-    # args.logit_adjustments = utils.compute_adjustment(train_loader, args.tro_train, args)
+    args.logit_adjustments = utils.compute_adjustment(train_loader, args.tro_train, args)
 
     optimizer = torch.optim.SGD(model.parameters(),
                                 args.lr,
