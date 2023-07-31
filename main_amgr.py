@@ -159,12 +159,15 @@ def compute_per_sample_gradients(model, x, target,criterion):
 
     with torch.no_grad(): 
         features = model(x,layer = 1)
-    output = model.module.linear(features)
-    if args.logit_adj_train:
-            output = output + args.logit_adjustments
-    for i, f in enumerate(output): 
+    
+    for i, f in enumerate(features): 
+        output = model.module.linear(f)
+
+        if args.logit_adj_train:
+            loss = criterion(model.module.linear(f)+ args.logit_adjustments, target[i])
+        else:
+            loss = criterion(model.module.linear(f), target[i])
         
-        loss = criterion(f, target[i])
 
         loss = loss.mean()
         grad = torch.autograd.grad(loss,  list(model.parameters())[-1],retain_graph=True )
