@@ -157,13 +157,15 @@ def compute_grad(sample, target, criterion, model):
 # my solution
 def compute_per_sample_gradients(model, x, target,criterion):
 
-    with torch.no_grad(): 
+
+    with torch.no_grad():  
         features = model(x,layer = 1)
     
     for i, f in enumerate(features): 
  
         if args.logit_adj_train:
             loss = criterion(model.module.linear(f)+ args.logit_adjustments, target[i])
+               
         else:
             loss = criterion(model.module.linear(f), target[i])
         
@@ -281,6 +283,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         else:
             temp = args.temp
         gram = torch.matmul(grads,grads_t) 
+        gram = gram - torch.eye(gram.size(0))
         gram = F.relu(torch.sub(gram,gamma))
         weights = torch.sum(gram, 1)
         weights = weights/temp
