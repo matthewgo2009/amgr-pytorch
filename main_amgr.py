@@ -257,46 +257,46 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         input_var = inputs.to(device)
         target_var = target
   
-        # params = {k: v.detach() for k, v in model.named_parameters()}
-        # buffers = {k: v.detach() for k, v in model.named_buffers()}
- 
-        # start_time = time.time()
-
-        # grads = compute_grad(input_var, target, criterion, model)
-        grads = compute_per_sample_gradients(model, input_var, target_var,criterion)
-        if args.norm:
-            grads = F.normalize(grads,p=2.0) 
+         
+        
         output = model(input_var)
 
         if args.logit_adj_train:
             output = output + args.logit_adjustments
 
-        grads_t = torch.transpose(grads, 0, 1)
-        if args.temp_decay:
-            temp = args.temp*(epoch/100+1)
+        if args.amgr:
+            grads = compute_per_sample_gradients(model, input_var, target_var,criterion)
+            if args.norm:
+                grads = F.normalize(grads,p=2.0) 
+
+            grads_t = torch.transpose(grads, 0, 1)
+            if args.temp_decay:
+                temp = args.temp*(epoch/100+1)
+            else:
+                temp = args.temp
+            gram = torch.matmul(grads,grads_t) 
+            gram = gram - torch.eye(gram.size(0)).to(device)
+            gram = F.relu(torch.sub(gram,gamma))
+            weights = torch.sum(gram, 1)
+            weights = weights/temp
+            weights = F.softmax(-weights)
+            weights = weights.detach()
+            
+            if args.measure == 1:
+                features = model(x,layer = 1)
+                features = F.normalize(features,p=2.0)
+                features_t = torch.transpose(features, 0, 1)
+                ft_gram = torch.matmul(features,features_t)
+                ft_gram = F.relu(torch.sub(ft_gram,gamma))
+                ft_weights = torch.sum(ft_gram, 1)
+                ft_weights = ft_weights/temp
+                ft_weights = F.softmax(-ft_weights)
+                ft_weights = ft_weights.detach()
+                alpha = epoch/1241
+                weights = (1-alpha)*weights + alpha*ft_weights
+                weights.detach()
         else:
-            temp = args.temp
-        gram = torch.matmul(grads,grads_t) 
-        gram = gram - torch.eye(gram.size(0)).to(device)
-        gram = F.relu(torch.sub(gram,gamma))
-        weights = torch.sum(gram, 1)
-        weights = weights/temp
-        weights = F.softmax(-weights)
-        weights = weights.detach()
-        
-        if args.measure == 1:
-            features = model(x,layer = 1)
-            features = F.normalize(features,p=2.0)
-            features_t = torch.transpose(features, 0, 1)
-            ft_gram = torch.matmul(features,features_t)
-            ft_gram = F.relu(torch.sub(ft_gram,gamma))
-            ft_weights = torch.sum(ft_gram, 1)
-            ft_weights = ft_weights/temp
-            ft_weights = F.softmax(-ft_weights)
-            ft_weights = ft_weights.detach()
-            alpha = epoch/1241
-            weights = (1-alpha)*weights + alpha*ft_weights
-            weights.detach()
+            weights = torch.ones(inputs.size(0))
  
         acc = utils.accuracy(output.data, target)
 
