@@ -175,8 +175,7 @@ def get_loaders(args):
 
 def get_loaders_v2(args):
 
-    if args.dataset!="imagenet":
-    """loads the dataset"""
+     """loads the dataset"""
 
     dataset = DATASET_MAPPINGS[args.dataset]
     train_dataset = dataset(root=args.data_home,
