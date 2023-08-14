@@ -102,7 +102,7 @@ def log_folders(args):
     """logs the folder"""
 
     log_dir = 'logs'
-    exp_dir = 'dataset_{}_logit{}_amgr_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}'.format(
+    exp_dir = 'dataset_{}_logit{}_amgr_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}_offdiag_{}'.format(
         args.dataset,
         args.logit_adj_train,
         args.amgr,
@@ -111,7 +111,8 @@ def log_folders(args):
         args.measure,
         args.temp,
         args.norm,
-        args.temp_decay)
+        args.temp_decay,
+        args.off_diag)
     exp_loc = os.path.join(log_dir, exp_dir)
     model_loc = os.path.join(exp_loc, "model_weights")
     make_dir(log_dir)
@@ -173,6 +174,8 @@ def get_loaders(args):
 
 
 def get_loaders_v2(args):
+
+    if args.dataset!="imagenet":
     """loads the dataset"""
 
     dataset = DATASET_MAPPINGS[args.dataset]

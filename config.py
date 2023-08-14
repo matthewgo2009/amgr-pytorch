@@ -6,7 +6,7 @@ def get_arguments():
     parser = argparse.ArgumentParser(
         description='PyTorch implementation of the paper: Long-tail Learning via Logit Adjustment')
     parser.add_argument('--dataset', default="cifar10-lt", type=str, help='Dataset to use.',
-                        choices=["cifar10", "cifar100", "cifar10-lt", "cifar100-lt"])
+                        choices=["cifar10", "cifar100", "cifar10-lt", "cifar100-lt","imagenet"])
     parser.add_argument('--data_home', default="data", type=str,
                         help='Directory where data files are stored.')
     parser.add_argument('--num_workers', default=2, type=int, metavar='N',
@@ -29,6 +29,7 @@ def get_arguments():
     parser.add_argument('--temp', default=10, type=float, help='tempreturen in softmax')
     parser.add_argument('--norm', default=1, type=int, help='0 for not normalize 1 for normalize', choices=[0,1])
     parser.add_argument('--temp_decay', default=0, type=float, help='tempreturen decay in softmax',choices = [0,1])
+    parser.add_argument('--off_diag', default=0, type=float, help='minus off_diag*identity matrix')
 
 
     return parser

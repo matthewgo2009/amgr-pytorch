@@ -275,7 +275,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             else:
                 temp = args.temp
             gram = torch.matmul(grads,grads_t) 
-            gram = gram - torch.eye(gram.size(0)).to(device)
+            gram = gram - args.off_diag*torch.eye(gram.size(0)).to(device)
             gram = F.relu(torch.sub(gram,gamma))
             weights = torch.sum(gram, 1)
             weights = weights/temp
