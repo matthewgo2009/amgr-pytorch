@@ -22,6 +22,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 args.device = device
 exp_loc, model_loc = utils.log_folders(args)
 writer = SummaryWriter(log_dir=exp_loc)
+score = {}
 
 
 def main():
@@ -44,6 +45,7 @@ def main():
 
     gamma = args.gamma
  
+
     if args.logit_adj_post:
         if os.path.isfile(os.path.join(model_loc, "model.th")):
             print("=> loading pretrained model ")
@@ -250,15 +252,15 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
     accuracies = utils.AverageMeter()
 
     model.train()
-     
+    
+ 
 
     for _, (inputs, target) in enumerate(train_loader):
         target = target.to(device)
         input_var = inputs.to(device)
         target_var = target
   
-         
-        
+                
         output = model(input_var)
 
         if args.logit_adj_train:
@@ -279,6 +281,13 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             gram = F.relu(torch.sub(gram,gamma))
             weights = torch.sum(gram, 1)
             weights = weights/temp
+            for i, item in enumerate(inputs):
+                if item in score:
+                    weights[i] = weights[i]+score[item]
+                    score[item]= weights[i]
+                else:
+                    score[item] = weights[i]
+
             weights = F.softmax(-weights)
             weights = weights.detach()
             
