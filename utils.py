@@ -113,7 +113,7 @@ def log_folders(args):
         args.norm,
         args.temp_decay,
         args.off_diag,
-        args.atten)
+        args.attn)
     exp_loc = os.path.join(log_dir, exp_dir)
     model_loc = os.path.join(exp_loc, "model_weights")
     make_dir(log_dir)
