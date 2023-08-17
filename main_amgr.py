@@ -312,7 +312,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         loss = criterion(output, target_var)
         
         if args.attn:
-            weighted_loss = torch.matmul(F.softmax(gram, dim = 1), loss ).mean()
+            weighted_loss = torch.matmul(F.softmax(-gram, dim = 1), loss ).mean()
         else:
             weighted_loss = torch.inner(loss,weights)
 
