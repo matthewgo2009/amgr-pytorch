@@ -251,8 +251,9 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
     model.train()
     
  
-
-    for _, (inputs, target) in enumerate(train_loader):
+    for i, (inputs, target) in enumerate(train_loader,0):
+        sample_fname, _ = train_loader.dataset.samples[i]
+        print(sample_fname)
         target = target.to(device)
         input_var = inputs.to(device)
         target_var = target
