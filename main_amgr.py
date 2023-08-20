@@ -159,17 +159,12 @@ def compute_grad(sample, target, criterion, model):
 # my solution
 def compute_per_sample_gradients(model, x, target,criterion):
 
-
     with torch.no_grad():  
-        features = model(x,layer = 1)
-    
+        features = model(x,layer = 2)
+
     for i, f in enumerate(features): 
- 
-        if args.logit_adj_train:
-            loss = criterion(model.module.linear(f)+ args.logit_adjustments, target[i])
-               
-        else:
-            loss = criterion(model.module.linear(f), target[i])
+  
+        loss = criterion(model.module.linear(f), target[i])
         
 
         loss = loss.mean()
@@ -180,6 +175,7 @@ def compute_per_sample_gradients(model, x, target,criterion):
             grads = grad
         else:
             grads = torch.cat([grads,grad],dim=0)
+ 
 
     # Now, gradients holds the per-sample gradients of the weights in the last_layer
     return grads
@@ -330,6 +326,9 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         losses.update(loss.item(), inputs.size(0))
         accuracies.update(acc, inputs.size(0))
 
+        #save dic file
+        with open("scores.json", "w") as outfile:
+            json.dump(score, outfile)
     return losses.avg, accuracies.avg
 
 
