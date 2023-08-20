@@ -81,7 +81,7 @@ def main():
             score[item] = 0
             class_name = target[i]
             class_cnt[class_name] += 1
-            image_name = 'image/label_'+ str(class_name) + '_' + str(class_cnt) +'_'+str(score[item]) + '.png'
+            image_name = 'image/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
             save_image(item, image_name)
     print('finish saving')
 
