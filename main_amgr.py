@@ -160,7 +160,7 @@ def compute_grad(sample, target, criterion, model):
 def compute_per_sample_gradients(model, x, target,criterion):
 
     with torch.no_grad():  
-        features = model(x,layer = 2)
+        features = model(x,layer = 1)
 
     for i, f in enumerate(features): 
   
