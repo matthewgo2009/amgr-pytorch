@@ -75,7 +75,7 @@ def main():
         target = target.to(device)
         input_var = inputs.to(device)
         target_var = target
-        for i in range(input_var):
+        for i in range(len(input_var)):
 
             item = input_var[i]
             score[item] = 0
