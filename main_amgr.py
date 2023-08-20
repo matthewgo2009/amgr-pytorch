@@ -109,6 +109,11 @@ def main():
     writer.add_hparams(hparam_dict=hyper_param, metric_dict=results)
     writer.close()
 
+        #save dic file
+    with open("scores.json", "w") as outfile:
+        json.dumps({str(k): v for k, v in score.iteritems()})
+
+
 
 def compute_grad(sample, target, criterion, model):
     # start_time = time.time()
@@ -252,8 +257,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
     
  
     for i, (inputs, target) in enumerate(train_loader,0):
-        sample_fname, _ = train_loader.dataset.samples[i]
-        print(sample_fname)
+
         target = target.to(device)
         input_var = inputs.to(device)
         target_var = target
@@ -328,9 +332,6 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         losses.update(loss.item(), inputs.size(0))
         accuracies.update(acc, inputs.size(0))
 
-        #save dic file
-        with open("scores.json", "w") as outfile:
-            json.dump(score, outfile)
     return losses.avg, accuracies.avg
 
 
