@@ -16,6 +16,8 @@ import time
 import torch.nn.functional as F
 from torch.func import functional_call, vmap, grad
 import json
+from torchvision.utils import save_image
+
 
 parser = get_arguments()
 args = parser.parse_args()
@@ -67,6 +69,22 @@ def main():
 
         return
 
+    class_cnt = [0]*10
+    for i, (inputs, target) in enumerate(train_loader,0):
+
+        target = target.to(device)
+        input_var = inputs.to(device)
+        target_var = target
+        for i in range(input_var):
+
+            item = input_var[i]
+            score[item] = 0
+            class_name = target[i]
+            class_cnt[class_name] += 1
+            image_name = 'image/label_'+ str(class_name) + '_' + str(class_cnt) +'_'+str(score[item]) + '.png'
+            save_image(item, image_name)
+    print('finish saving')
+
     args.logit_adjustments = utils.compute_adjustment(train_loader, args.tro_train, args)
 
     optimizer = torch.optim.SGD(model.parameters(),
@@ -109,10 +127,8 @@ def main():
     writer.add_hparams(hparam_dict=hyper_param, metric_dict=results)
     writer.close()
 
-        #save dic file
-    with open("scores.json", "w") as outfile:
-        json.dumps({str(k): v for k, v in score.iteritems()})
-
+     
+   
 
 
 def compute_grad(sample, target, criterion, model):
