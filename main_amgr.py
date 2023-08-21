@@ -69,21 +69,7 @@ def main():
 
         return
 
-    class_cnt = [0]*10
-    for i, (inputs, target) in enumerate(train_loader,0):
-
-        target = target.to(device)
-        input_var = inputs.to(device)
-        target_var = target
-        for i in range(len(input_var)):
-
-            item = input_var[i]
-            score[item] = 0
-            class_name = int(target[i])
-            class_cnt[class_name] += 1
-            image_name = 'image/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
-            save_image(item, image_name)
-    print('finish saving')
+   
 
     args.logit_adjustments = utils.compute_adjustment(train_loader, args.tro_train, args)
 
@@ -115,6 +101,20 @@ def main():
         loop.set_postfix(train_loss=f"{train_loss:.2f}", val_loss=f"{val_loss:.2f}",
                          train_acc=f"{train_acc:.2f}",
                          val_acc=f"{val_acc:.2f}")
+    class_cnt = [0]*10
+    for j, (inputs, target) in enumerate(train_loader,0):
+
+        target = target.to(device)
+        input_var = inputs.to(device)
+        target_var = target
+        for i in range(len(input_var)):
+
+            item = input_var[i]
+            class_name = int(target[i])
+            class_cnt[class_name] += 1
+            image_name = 'image/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
+            save_image(item, image_name)
+    print('finish saving')
 
     file_name = 'model.th'
     mdel_data = {"state_dict": model.state_dict()}
@@ -126,6 +126,7 @@ def main():
     pprint(results)
     writer.add_hparams(hparam_dict=hyper_param, metric_dict=results)
     writer.close()
+
 
      
    
