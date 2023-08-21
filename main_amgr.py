@@ -101,20 +101,21 @@ def main():
         loop.set_postfix(train_loss=f"{train_loss:.2f}", val_loss=f"{val_loss:.2f}",
                          train_acc=f"{train_acc:.2f}",
                          val_acc=f"{val_acc:.2f}")
-    class_cnt = [0]*10
-    for j, (inputs, target) in enumerate(train_loader,0):
 
-        target = target.to(device)
-        input_var = inputs.to(device)
-        target_var = target
-        for i in range(len(input_var)):
+        class_cnt = [0]*10
+        for _, (inputs, target) in enumerate(train_loader):
 
-            item = input_var[i]
-            class_name = int(target[i])
-            class_cnt[class_name] += 1
-            image_name = args.save_dir+'/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
-            save_image(item, image_name)
-    print('finish saving')
+            target = target.to(device)
+            input_var = inputs.to(device)
+            target_var = target
+            for i in range(len(input_var)):
+
+                item = input_var[i]
+                class_name = int(target[i])
+                class_cnt[class_name] += 1
+                image_name = args.save_dir+'/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
+                save_image(item, image_name)
+        print('finish saving')
 
     file_name = 'model.th'
     mdel_data = {"state_dict": model.state_dict()}
@@ -299,7 +300,6 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             gram = gram - args.off_diag*torch.eye(gram.size(0)).to(device)
             gram = F.relu(torch.sub(gram,gamma))
             weights = torch.sum(gram, 1)
-            weights = weights/temp
             for i, item in enumerate(inputs):
                 if item in score:
                     weights[i] = weights[i]+score[item]
@@ -307,6 +307,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                 else:
                     score[item] = weights[i]
 
+            weights = weights/temp
             weights = F.softmax(-weights)
             weights = weights.detach()
             
