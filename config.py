@@ -31,6 +31,8 @@ def get_arguments():
     parser.add_argument('--temp_decay', default=0, type=float, help='tempreturen decay in softmax',choices = [0,1])
     parser.add_argument('--off_diag', default=0, type=float, help='minus off_diag*identity matrix')
     parser.add_argument('--attn', default=0, type=int, help='Attention?', choices=[0,1])
+    parser.add_argument('--save_dir', default='image', type=str, help='dir to save image')
+
 
 
 

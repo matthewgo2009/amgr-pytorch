@@ -112,7 +112,7 @@ def main():
             item = input_var[i]
             class_name = int(target[i])
             class_cnt[class_name] += 1
-            image_name = 'image/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
+            image_name = args.save_dir+'/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
             save_image(item, image_name)
     print('finish saving')
 
