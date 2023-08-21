@@ -108,9 +108,9 @@ def main():
             target = target.to(device)
             input_var = inputs.to(device)
             target_var = target
-            for i in range(len(input_var)):
+            for i in range(len(inputs)):
 
-                item = input_var[i]
+                item = inputs[i]
                 class_name = int(target[i])
                 class_cnt[class_name] += 1
                 image_name = args.save_dir+'/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
