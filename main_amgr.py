@@ -275,7 +275,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
     # for _, (inputs, target,idx) in enumerate(train_loader):
     for _, item in enumerate(train_loader):
 
-        print(item.size())
+        print(item[0])
         idx = target[:,1]
         target = target[:,0]
         target = target.to(device)
