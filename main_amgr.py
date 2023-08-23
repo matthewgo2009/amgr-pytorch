@@ -101,19 +101,24 @@ def main():
                          train_acc=f"{train_acc:.2f}",
                          val_acc=f"{val_acc:.2f}")
 
-        # class_cnt = [0]*10
-        # for _, (inputs, target) in enumerate(train_loader):
-
-        #     target = target.to(device)
-        #     input_var = inputs.to(device)
-        #     target_var = target
-        #     for i, item in enumerate(inputs): 
-             
-        #         class_name = int(target[i])
-        #         class_cnt[class_name] += 1
-        #         image_name = args.save_dir+'/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
-        #         save_image(item, image_name)
-        # print('finish saving')
+        class_cnt = [0]*10
+        records = []
+        for _, (inputs, target,idx) in enumerate(train_loader):
+            target = target.to(device)
+            input_var = inputs.to(device)
+            target_var = target
+            for i, index in enumerate(idx): 
+                index = int(index)
+                record = [index, score[index], int(target[i])]
+                records.append(record)
+                
+                # class_name = int(target[i])
+                # class_cnt[class_name] += 1
+                # image_name = args.save_dir+'/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
+                # save_image(item, image_name)
+        # records = np.array(records)
+        # np.savez(outfile, records, images)
+        print('finish saving')
 
     file_name = 'model.th'
     mdel_data = {"state_dict": model.state_dict()}
@@ -300,7 +305,6 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             for i, index in enumerate(idx):
                 index = int(index)
                 if index in score:
-                    print('found')
                     weights[i] = weights[i]+score[index]
                     score[index]= weights[i]
                 else:
