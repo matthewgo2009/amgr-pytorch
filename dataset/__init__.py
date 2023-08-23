@@ -19,7 +19,7 @@ class _CIFARLTNPZDataset(TensorDataset):
         tensor_idx = torch.Tensor(np_idx).to(dtype=torch.int64)
 
         tensor_labels = np.concatenate((tensor_labels, tensor_idx), axis=1)
-        print(tensor_labels.size())
+        print(tensor_labels)
         print(tensor_data.size())
         super().__init__(tensor_data, tensor_labels)
 
