@@ -184,6 +184,9 @@ def get_loaders_v2(args):
                             transform=TRAIN_TRANSFORMS[args.dataset],
                             download=True)
     num_train = len(train_dataset)
+    print(train_dataset)
+    print(train_dataset.shape)
+
 
     test_dataset = dataset(root=args.data_home,
                            train=False,
