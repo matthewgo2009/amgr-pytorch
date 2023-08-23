@@ -39,12 +39,12 @@ class _CIFARLTNPZDataset(TensorDataset):
         return image
 
     def __getitem__(self, idx):
-        image, label = super().__getitem__(idx)
+        image, label, index = super().__getitem__(idx)
         image = self._process_image(image)
 
         label = label.numpy()[0]
 
-        return image, label
+        return image, label,index
 
     @abc.abstractmethod
     def get_classes(self):
