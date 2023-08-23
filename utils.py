@@ -185,7 +185,7 @@ def get_loaders_v2(args):
                             download=True)
     num_train = len(train_dataset)
    
-
+    print(train_dataset[0])
 
     test_dataset = dataset(root=args.data_home,
                            train=False,
