@@ -12,17 +12,21 @@ class _CIFARLTNPZDataset(TensorDataset):
         self._m_transform = transform
 
         file_path: str = os.path.join(root, cifar_prefix + "_" + ("train" if train else "test") + ".npz")
-        np_data, np_labels = _CIFARLTNPZDataset._get_np_data_from_file(file_path)
+        np_data, np_labels, np_idx = _CIFARLTNPZDataset._get_np_data_from_file(file_path)
 
         tensor_data = torch.Tensor(np_data).to(dtype=torch.float32)
         tensor_labels = torch.Tensor(np_labels).to(dtype=torch.int64)
+        tensor_idx = torch.Tensor(np_idx).to(dtype=torch.int64)
 
+        tensor_labels = np.concatenate((tensor_labels, tensor_idx), axis=1)
         super().__init__(tensor_data, tensor_labels)
 
     @staticmethod
     def _get_np_data_from_file(file_path: str):
         loaded_file_data = np.load(file_path, allow_pickle=True)
-        return loaded_file_data["arr_0"], loaded_file_data["arr_1"]
+        idx = np.arange(len(loaded_file_data["arr_1"]))
+        idx = np.expand_dims(idx, axis=1)
+        return loaded_file_data["arr_0"], loaded_file_data["arr_1"], idx
 
     def _process_image(self, image):
         image = image.squeeze()
@@ -107,7 +111,8 @@ class CIFAR10LTNPZDataset(_CIFARLTNPZDataset):
 
     def get_epoch(self):
         # 12406 10000
-        return 120
+        # return 1241
+        return 300
 
     def get_scheduler(self):
         return [604, 926, 1128]
