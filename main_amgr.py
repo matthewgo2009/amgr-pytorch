@@ -328,7 +328,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                 weights = (1-alpha)*weights + alpha*ft_weights
                 weights.detach()
         else:
-            weights = torch.ones(inputs.size(0))
+            weights = torch.ones(inputs.size(0)).to(device)
  
         acc = utils.accuracy(output.data, target)
 
