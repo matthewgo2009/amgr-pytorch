@@ -126,7 +126,7 @@ def compute_adjustment(train_loader, tro, args):
     """compute the base probabilities"""
 
     label_freq = {}
-    for i, (inputs, target) in enumerate(train_loader):
+    for i, (inputs, target,idx) in enumerate(train_loader):
         target = target.to(args.device)
         for j in target:
             key = int(j.item())
