@@ -298,13 +298,13 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             gram = gram - args.off_diag*torch.eye(gram.size(0)).to(device)
             gram = F.relu(torch.sub(gram,gamma))
             weights = torch.sum(gram, 1)
-            for i, item in enumerate(inputs):
-                if item in score:
+            for i, index in enumerate(idx):
+                if index in score:
                     print('found')
-                    weights[i] = weights[i]+score[item]
-                    score[item]= weights[i]
+                    weights[i] = weights[i]+score[index]
+                    score[index]= weights[i]
                 else:
-                    score[item] = weights[i]
+                    score[index] = weights[i]
 
             weights = weights/temp
             weights = F.softmax(-weights)
