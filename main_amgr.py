@@ -272,13 +272,8 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
     model.train()
     
  
-    # for _, (inputs, target,idx) in enumerate(train_loader):
-    for _, item in enumerate(train_loader):
-
-        print(item[1])
-        print(item[2])
-        idx = target[:,1]
-        target = target[:,0]
+    for _, (inputs, target,idx) in enumerate(train_loader):
+        print(idx)
         target = target.to(device)
         input_var = inputs.to(device)
         target_var = target
@@ -358,101 +353,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
 
 
 
-# def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
-    """ Run one train epoch """
-    losses = utils.AverageMeter()
-    accuracies = utils.AverageMeter()
-
-    update_gap = args.update_gap
-    model.train()
-    num_batches = int(num_train/args.batch_size)
-    arr1 = np.arange(num_train)
-    arr2 = np.arange(num_train)
  
-    np.random.shuffle(arr1)
-    np.random.shuffle(arr2)
- 
-    for t in range(num_batches):
-        # start_time = time.time()
-
-        B1_idx = arr1[t*args.batch_size:(t+1)*args.batch_size]
-
-        batch = [train_dataset[i] for i in B1_idx]
-        # print("---current batch is %s ---" % arr1[t*args.batch_size:(t+1)*args.batch_size])
-        B1 = list(zip(*batch))[0] 
-        B1 =  torch.stack(B1)
-        Y1 = list(zip(*batch))[1] 
-        Y1 = torch.tensor(Y1)        
-        Y1 = Y1.to(device)
-        B1_var = B1.to(device)
-        Y1_var = Y1
-
-
-        batch = [train_dataset[i] for i in arr2[t*args.batch_size:(t+1)*args.batch_size]]
-        B2 = list(zip(*batch))[0]
-        B2 =  torch.stack(B2)
-        Y2 = list(zip(*batch))[1]  
-        Y2 = torch.tensor(Y2)       
-        Y2 = Y2.to(device)
-        B2_var = B2.to(device)
-        Y2_var = Y2
-        
-
-        measure = args.measure
-        weight = torch.ones(len(B1),device = device)
-        ##### compute weights (exp of sum) #######
-        if epoch<=0:          #do 700 epoch standard ERM training
-            for i in range(len(B1)):
-                weight[i] = math.exp(-z[B1_idx[i]])
-        elif epoch%update_gap==0 :                                # update weights every 100 epochs
-            for i in range(len(B1)):
-                x_i,y_i = B1[i], Y1[i]
-                grad_i = compute_grad(x_i, y_i, criterion, model)
-                corr = 0
-                for j in range(int(len(B2)*0.05)):
-                    x_j,y_j = B2[j], Y2[j]
-                    if measure == 0:
-                        corr = corr + q(model,criterion, grad_i,x_j,y_j,gamma)
-                    else:
-                        x_i = x_i.unsqueeze(0)  # prepend batch dimension for processing
-                        output_i = model(x_i)[-1]
-                        corr = corr + embedding_corr(model,output_i,x_j,gamma)
-                z[B1_idx[i]] = corr
-                weight[i] = math.exp(-z[B1_idx[i]])
-        else:          #do 700 epoch standard ERM training
-            for i in range(len(B1)):
-                weight[i] = math.exp(-z[B1_idx[i]])
-             
-        weight = weight.detach()
-        weight = weight/weight.sum()
- 
-        #####compute stochastic gradients#######
-
- 
-        output = model(B1_var)
-        acc = utils.accuracy(output.data, Y1_var) 
-        loss = criterion(output, Y1_var)
-       
-        
-
-        weighted_loss = torch.inner(loss,weight)
-        # print(weighted_loss)
-        loss = loss.mean()
-        loss_r = 0
-        for parameter in model.parameters():
-            loss_r += torch.sum(parameter ** 2)
-        loss = loss + args.weight_decay * loss_r
-        weighted_loss =   weighted_loss + args.weight_decay * loss_r
-       
-        optimizer.zero_grad()
-        weighted_loss.backward()
-        optimizer.step()
-
-        losses.update(loss.item(), B1.size(0))
-        accuracies.update(acc, B1.size(0))
-        # print("---one batch runtime is %s seconds ---" % (time.time() - start_time))
-
-    return losses.avg, accuracies.avg
 
 
 def validate(val_loader, model, criterion):
@@ -464,9 +365,8 @@ def validate(val_loader, model, criterion):
     model.eval()
 
     with torch.no_grad():
-        for _, (inputs, target) in enumerate(val_loader):
-            idx = target[:,1]
-            target = target[:,0]
+        for _, (inputs, target,idx) in enumerate(val_loader):
+           
             target = target.to(device)
             input_var = inputs.to(device)
             target_var = target.to(device)
