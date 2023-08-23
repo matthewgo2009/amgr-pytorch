@@ -101,16 +101,16 @@ def main():
                          train_acc=f"{train_acc:.2f}",
                          val_acc=f"{val_acc:.2f}")
 
-        class_cnt = [0]*10
-        records = []
-        for _, (inputs, target,idx) in enumerate(train_loader):
-            target = target.to(device)
-            input_var = inputs.to(device)
-            target_var = target
-            for i, index in enumerate(idx): 
-                index = int(index)
-                record = [index, score[index], int(target[i])]
-                records.append(record)
+        # class_cnt = [0]*10
+        # records = []
+        # for _, (inputs, target,idx) in enumerate(train_loader):
+        #     target = target.to(device)
+        #     input_var = inputs.to(device)
+        #     target_var = target
+        #     for i, index in enumerate(idx): 
+        #         index = int(index)
+        #         record = [index, score[index], int(target[i])]
+        #         records.append(record)
                 
                 # class_name = int(target[i])
                 # class_cnt[class_name] += 1
@@ -118,7 +118,7 @@ def main():
                 # save_image(item, image_name)
         # records = np.array(records)
         # np.savez(outfile, records, images)
-        print('finish saving')
+        # print('finish saving')
 
     file_name = 'model.th'
     mdel_data = {"state_dict": model.state_dict()}
