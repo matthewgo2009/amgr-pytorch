@@ -184,6 +184,8 @@ def get_loaders_v2(args):
                             transform=TRAIN_TRANSFORMS[args.dataset],
                             download=True)
     num_train = len(train_dataset)
+    for i in range(num_train):
+        train_dataset[i] = train_dataset[i] + (i,)
     print(train_dataset[0]) 
 
 
