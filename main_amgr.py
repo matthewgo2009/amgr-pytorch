@@ -273,7 +273,8 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
     
  
     for _, (inputs, target) in enumerate(train_loader):
-
+        idx = target[:,1]
+        target = target[:,0]
         target = target.to(device)
         input_var = inputs.to(device)
         target_var = target
@@ -353,7 +354,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
 
 
 
-def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
+# def train(train_dataset, model, criterion, optimizer,num_train,gamma,z,epoch):
     """ Run one train epoch """
     losses = utils.AverageMeter()
     accuracies = utils.AverageMeter()
@@ -460,6 +461,8 @@ def validate(val_loader, model, criterion):
 
     with torch.no_grad():
         for _, (inputs, target) in enumerate(val_loader):
+            idx = target[:,1]
+            target = target[:,0]
             target = target.to(device)
             input_var = inputs.to(device)
             target_var = target.to(device)
