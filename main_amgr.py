@@ -298,6 +298,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             gram = F.relu(torch.sub(gram,gamma))
             weights = torch.sum(gram, 1)
             for i, index in enumerate(idx):
+                print(index)
                 if index in score:
                     print('found')
                     weights[i] = weights[i]+score[index]
