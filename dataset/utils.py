@@ -5,4 +5,5 @@ DATASET_MAPPINGS = {
     "cifar100": CIFAR100Dataset,
     "cifar10-lt": CIFAR10LTNPZDataset,
     "cifar100-lt": CIFAR100LTNPZDataset,
+    "imagenet": IMAGENETDataset
 }
