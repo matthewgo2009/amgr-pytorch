@@ -102,25 +102,24 @@ def main():
                          train_acc=f"{train_acc:.2f}",
                          val_acc=f"{val_acc:.2f}")
 
-        class_cnt = [0]*10
         records = []
-        for _, (inputs, target,idx) in enumerate(train_loader):
-             
-            for i, index in enumerate(idx): 
-                index = int(index)
-                record = [index, score[index].cpu(), int(target[i])]
-                records.append(record)
-                
-                # class_name = int(target[i])
-                # class_cnt[class_name] += 1
-                # image_name = args.save_dir+'/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
-                # save_image(item, image_name)
-        records = np.array(records)
-        filename = os.path.join(scores_dir, 'score.npy')
-        with open(filename, 'wb') as f:
-            np.save(f, records)
-        print('finish saving')
-
+        if args.amgr:
+            for _, (inputs, target,idx) in enumerate(train_loader):
+                 
+                for i, index in enumerate(idx): 
+                    index = int(index)
+                    record = [index, score[index].cpu(), int(target[i])]
+                    records.append(record)
+                    
+                    # class_name = int(target[i])
+                    # class_cnt[class_name] += 1
+                    # image_name = args.save_dir+'/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
+                    # save_image(item, image_name)
+            records = np.array(records)
+            filename = os.path.join(scores_dir, 'score.npy')
+            with open(filename, 'wb') as f:
+                np.save(f, records)
+ 
     file_name = 'model.th'
     mdel_data = {"state_dict": model.state_dict()}
     torch.save(mdel_data, os.path.join(model_loc, file_name))
