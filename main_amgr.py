@@ -110,6 +110,7 @@ def main():
             for i, index in enumerate(idx): 
                 index = int(index)
                 record = [index, score[index], int(target[i])]
+                record = record.cpu()
                 records.append(record)
                 
                 # class_name = int(target[i])
