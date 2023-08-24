@@ -23,6 +23,7 @@ args = parser.parse_args()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 args.device = device
 exp_loc, model_loc = utils.log_folders(args)
+scores_dir = utils.score_folders(args)
 writer = SummaryWriter(log_dir=exp_loc)
 score = {}
 
@@ -115,7 +116,8 @@ def main():
                 # image_name = args.save_dir+'/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
                 # save_image(item, image_name)
         records = np.array(records)
-        with open('score.npy', 'wb') as f:
+        filename = os.path.join(scores_dir, 'score.npy')
+        with open(filename, 'wb') as f:
             np.save(f, records)
         print('finish saving')
 
