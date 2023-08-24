@@ -123,6 +123,28 @@ def log_folders(args):
     make_dir(model_loc)
     return exp_loc, model_loc
 
+def score_folders(args):
+    """scores folder"""
+
+    log_dir = 'scores'
+    exp_dir = 'dataset_{}_logit{}_amgr_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}_offdiag_{}_attn_{}_wo{}_eps{}'.format(
+        args.dataset,
+        args.logit_adj_train,
+        args.amgr,
+        args.gamma,
+        args.batch_size,
+        args.measure,
+        args.temp,
+        args.norm,
+        args.temp_decay,
+        args.off_diag,
+        args.attn,
+        args.wo,
+        args.eps)
+    exp_loc = os.path.join(log_dir, exp_dir)
+    make_dir(log_dir)
+    make_dir(exp_loc)
+    return exp_loc 
 
 def compute_adjustment(train_loader, tro, args):
     """compute the base probabilities"""
