@@ -304,7 +304,8 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             for i, index in enumerate(idx):
                 index = int(index)
                 if index in score:
-                    score[index]= weights[i]+score[index]
+                    weights[i]+=score[index]
+                    score[index]= weights[i] 
                 else:
                     score[index] = weights[i]
 
@@ -325,10 +326,10 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                 alpha = epoch/1241
                 weights = (1-alpha)*weights + alpha*ft_weights
                 weights.detach()
-                if args.attn:
-                    weighted_loss = torch.matmul(F.softmax(-gram, dim = 1), loss ).mean()
-                else:
-                    weighted_loss = torch.inner(loss,weights)
+            if args.attn:
+                weighted_loss = torch.matmul(F.softmax(-gram, dim = 1), loss ).mean()
+            else:
+                weighted_loss = torch.inner(loss,weights)
        
         acc = utils.accuracy(output.data, target)
 
