@@ -310,7 +310,10 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                     score[index] = weights[i]
 
             weights = weights/(temp*(epoch+1))
-            weights = F.softmax(-weights)
+            if args.wo == 0:
+                weights = F.softmax(-weights)
+            elif args.wo == 1:
+                weights = [1/(number+args.eps) for number in weights]
             weights = weights.detach()
             
             if args.measure == 1:
