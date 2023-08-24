@@ -326,16 +326,16 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                 alpha = epoch/1241
                 weights = (1-alpha)*weights + alpha*ft_weights
                 weights.detach()
-            if args.attn:
-                weighted_loss = torch.matmul(F.softmax(-gram, dim = 1), loss ).mean()
-            else:
-                weighted_loss = torch.inner(loss,weights)
+            
        
         acc = utils.accuracy(output.data, target)
 
         loss = criterion(output, target_var)
         
-        
+        if args.attn:
+            weighted_loss = torch.matmul(F.softmax(-gram, dim = 1), loss ).mean()
+        else:
+            weighted_loss = torch.inner(loss,weights)
 
         loss=loss.mean()
         loss_r = 0
