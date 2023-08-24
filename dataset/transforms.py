@@ -19,8 +19,8 @@ TRAIN_TRANSFORMS = {
         normalize
     ]),
     "cifar10-lt": transforms.Compose([
-        # transforms.RandomHorizontalFlip(),
-        # transforms.RandomCrop(32, 4),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomCrop(32, 4),
         normalize
     ]),
     "cifar100-lt": transforms.Compose([
