@@ -32,6 +32,11 @@ def get_arguments():
     parser.add_argument('--off_diag', default=0, type=float, help='minus off_diag*identity matrix')
     parser.add_argument('--attn', default=0, type=int, help='Attention?', choices=[0,1])
     parser.add_argument('--save_dir', default='image', type=str, help='dir to save image')
+    parser.add_argument('--wo', default=0, type=int, help='weighting option. 0 for softmax, 1 for inverse', choices=[0,1])
+    parser.add_argument('--eps', default=0.5, type=float, help='small value to avoid divided by 0')
+
+
+    
 
 
 
