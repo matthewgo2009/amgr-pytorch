@@ -327,24 +327,24 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                 alpha = epoch/1241
                 weights = (1-alpha)*weights + alpha*ft_weights
                 weights.detach()
-        # else:
-        #     weights = torch.ones(inputs.size(0)).to(device)
- 
+                if args.attn:
+                    weighted_loss = torch.matmul(F.softmax(-gram, dim = 1), loss ).mean()
+                else:
+                    weighted_loss = torch.inner(loss,weights)
+       
         acc = utils.accuracy(output.data, target)
 
         loss = criterion(output, target_var)
         
-        if args.attn:
-            weighted_loss = torch.matmul(F.softmax(-gram, dim = 1), loss ).mean()
-        else:
-            weighted_loss = torch.inner(loss,weights)
+        
 
         loss=loss.mean()
         loss_r = 0
         for parameter in model.parameters():
             loss_r += torch.sum(parameter ** 2)
         loss = loss + args.weight_decay * loss_r
-        weighted_loss = weighted_loss + args.weight_decay * loss_r
+        if args.amgr:
+            weighted_loss = weighted_loss + args.weight_decay * loss_r
 
         optimizer.zero_grad()
         if args.amgr:
