@@ -49,7 +49,7 @@ def class_accuracy(test_loader, model, args):
     with torch.no_grad():
         n_class_correct = [0 for _ in range(num_class)]
         n_class_samples = [0 for _ in range(num_class)]
-        for images, labels in test_loader:
+        for images, labels, idx in test_loader:
             images = images.to(args.device)
             labels = labels.to(args.device)
 
