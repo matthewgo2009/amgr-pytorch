@@ -115,7 +115,8 @@ def main():
                 # image_name = args.save_dir+'/label_'+ str(class_name) + '_' + str(class_cnt[class_name]) +'_'+str(score[item]) + '.png'
                 # save_image(item, image_name)
         records = np.array(records)
-        np.savez(outfile, records)
+        with open('score.npy', 'wb') as f:
+            np.save(f, records)
         print('finish saving')
 
     file_name = 'model.th'
