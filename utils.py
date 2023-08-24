@@ -102,7 +102,7 @@ def log_folders(args):
     """logs the folder"""
 
     log_dir = 'logs'
-    exp_dir = 'dataset_{}_logit{}_amgr_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}_offdiag_{}_attn_{}_wo{}_eps{}'.format(
+    exp_dir = 'dataset_{}_logit{}_amgr_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}_offdiag_{}_cumulative_{}_wo{}_eps{}'.format(
         args.dataset,
         args.logit_adj_train,
         args.amgr,
@@ -113,7 +113,7 @@ def log_folders(args):
         args.norm,
         args.temp_decay,
         args.off_diag,
-        args.attn,
+        args.cumulative,
         args.wo,
         args.eps)
     exp_loc = os.path.join(log_dir, exp_dir)
@@ -127,7 +127,7 @@ def score_folders(args):
     """scores folder"""
 
     log_dir = 'scores'
-    exp_dir = 'dataset_{}_logit{}_amgr_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}_offdiag_{}_attn_{}_wo{}_eps{}'.format(
+    exp_dir = 'dataset_{}_logit{}_amgr_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}_offdiag_{}_cumulative_{}_wo{}_eps{}'.format(
         args.dataset,
         args.logit_adj_train,
         args.amgr,
@@ -138,7 +138,7 @@ def score_folders(args):
         args.norm,
         args.temp_decay,
         args.off_diag,
-        args.attn,
+        args.cumulative,
         args.wo,
         args.eps)
     exp_loc = os.path.join(log_dir, exp_dir)
