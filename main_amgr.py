@@ -287,7 +287,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
 
         if args.logit_adj_train:
             output = output + args.logit_adjustments
-
+        weighted_loss = 0
         if args.amgr:
             grads = compute_per_sample_gradients(model, input_var, target_var,criterion)
             if args.norm:
