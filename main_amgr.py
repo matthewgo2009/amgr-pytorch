@@ -335,10 +335,8 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         acc = utils.accuracy(output.data, target)
 
         loss = criterion(output, target_var)
-        
-        if args.attn:
-            weighted_loss = torch.matmul(F.softmax(-gram, dim = 1), loss ).mean()
-        else:
+
+        if args.amgr:
             weighted_loss = torch.inner(loss,weights)
 
         loss=loss.mean()
