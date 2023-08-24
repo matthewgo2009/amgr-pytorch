@@ -304,8 +304,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             for i, index in enumerate(idx):
                 index = int(index)
                 if index in score:
-                    weights[i] = weights[i]+score[index]
-                    score[index]= weights[i]
+                    score[index]= weights[i]+score[index]
                 else:
                     score[index] = weights[i]
 
