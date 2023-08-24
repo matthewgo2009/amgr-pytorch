@@ -302,15 +302,17 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             gram = gram - args.off_diag*torch.eye(gram.size(0)).to(device)
             gram = F.relu(torch.sub(gram,gamma))
             weights = torch.sum(gram, 1)
+            #compute cumulative score
             for i, index in enumerate(idx):
                 index = int(index)
                 if index in score:
-                    weights[i]+=score[index]
-                    score[index]= weights[i] 
+                    score[index] += weights[i] 
+                    score[index] = score[index]/(epoch+1)
                 else:
                     score[index] = weights[i]
-
-            weights = weights/(temp*(epoch+1))
+                if args.cumulative:
+                    weights[i] = score[index]
+            weights = weights/temp
             if args.wo == 0:
                 weights = F.softmax(-weights)
             elif args.wo == 1:
