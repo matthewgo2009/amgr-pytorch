@@ -316,6 +316,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
             elif args.wo == 1:
                 summation = weights.sum()
                 weights = torch.tensor([summation/max(number,args.eps) for number in weights]).to(device)
+                weights = F.softmax(weights)
             weights = weights.detach()
             
             if args.measure == 1:
