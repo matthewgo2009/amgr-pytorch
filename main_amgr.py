@@ -300,8 +300,10 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                 temp = args.temp
             gram = torch.matmul(grads,grads_t) 
             gram = gram - args.off_diag*torch.eye(gram.size(0)).to(device)
-            gram = F.relu(torch.sub(gram,gamma))
-            weights = torch.sum(gram, 1)
+            
+            # gram = F.relu(torch.sub(gram,gamma))
+            weights = [(row>=gamma).sum() for row in gram]
+            # weights = torch.sum(gram, 1)
             #compute cumulative score
             for i, index in enumerate(idx):
                 index = int(index)
