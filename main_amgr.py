@@ -314,7 +314,8 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                     score[index] = weights[i]
                 if args.cumulative:
                     weights[i] = score[index]
-            weights = [weight/temp for weight in weights]
+            weights = torch.tensor(weights).to(device)
+            weights = weights/temp
             if args.wo == 0:
                 weights = F.softmax(-weights)
             elif args.wo == 1:
