@@ -26,7 +26,7 @@ def get_arguments():
     parser.add_argument('--tro_train', default=1.0, type=float, help='tro for logit adj train')
     parser.add_argument('--update_gap', default=50, type=int, help='updating weights gap')
     parser.add_argument('--measure', default=0, type=int, help='0 for gradient, 1 for embedding and 2 for gradient+embedding',choices=[0,1,2])
-    parser.add_argument('--temp', default=10, type=float, help='tempreturen in softmax')
+    parser.add_argument('--temp', default=1, type=float, help='tempreturen in softmax')
     parser.add_argument('--norm', default=1, type=int, help='0 for not normalize 1 for normalize', choices=[0,1])
     parser.add_argument('--temp_decay', default=0, type=float, help='tempreturen decay in softmax',choices = [0,1])
     parser.add_argument('--off_diag', default=0, type=float, help='minus off_diag*identity matrix')
