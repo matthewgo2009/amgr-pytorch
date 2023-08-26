@@ -315,9 +315,10 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
                 if args.cumulative:
                     weights[i] = score[index]
             weights = torch.tensor(weights).to(device)
+            print(weights)
             weights = weights/temp
             if args.wo == 0:
-                weights = F.softmax(-weights)/len(inputs)
+                weights = F.softmax(-weights)
             elif args.wo == 1:
                 weights = torch.tensor([args.batch_size/number for number in weights]).to(device)
             weights = weights.detach()
