@@ -20,7 +20,7 @@ def get_arguments():
     parser.add_argument('--tro_post_range', help='check diffrent val of tro in post hoc', type=list,
                         default=[0.25, 0.5, 0.75, 1, 1.5, 2])
     parser.add_argument('--logit_adj_train', help='adjust logits in trainingc', type=int, default=0, choices=[0, 1])
-    parser.add_argument('--amgr', help='adaptative majority gradient reweighting', type=int, default=0, choices=[0, 1])
+    parser.add_argument('--br', help='enable batch reweighting', type=int, default=0, choices=[0, 1])
     parser.add_argument('--rc', help='representation correction', type=int, default=0, choices=[0, 1])
     parser.add_argument('--gamma', help='threshold for gradient similarity', type=float, default=0.7)
     parser.add_argument('--tro_train', default=1.0, type=float, help='tro for logit adj train')
