@@ -1,4 +1,4 @@
-# batch-reweighting-imagenet
+# batch-reweighting-cifar
 This is the code for batch reweighting training on CIFAR10/100 (LT).
 
 ## Running the code 
