@@ -102,10 +102,10 @@ def log_folders(args):
     """logs the folder"""
 
     log_dir = 'logs'
-    exp_dir = 'dataset_{}_logit{}_amgr_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}_offdiag_{}_cumulative_{}_wo{}_eps{}'.format(
+    exp_dir = 'dataset_{}_logit{}_br_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}_offdiag_{}_cumulative_{}_wo{}_eps{}'.format(
         args.dataset,
         args.logit_adj_train,
-        args.amgr,
+        args.br,
         args.gamma,
         args.batch_size,
         args.measure,
@@ -127,10 +127,10 @@ def score_folders(args):
     """scores folder"""
 
     log_dir = 'scores'
-    exp_dir = 'dataset_{}_logit{}_amgr_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}_offdiag_{}_cumulative_{}_wo{}_eps{}'.format(
+    exp_dir = 'dataset_{}_logit{}_br_{}_gamma_{}_batchsize_{}_measure_{}_temp_{}_norm{}_tempdecay_{}_offdiag_{}_cumulative_{}_wo{}_eps{}'.format(
         args.dataset,
         args.logit_adj_train,
-        args.amgr,
+        args.br,
         args.gamma,
         args.batch_size,
         args.measure,
