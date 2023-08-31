@@ -1,7 +1,46 @@
 # batch-reweighting-cifar
 This is the code for batch reweighting training on CIFAR10/100 (LT).
 
+## General usage of batch reweighting
+Batch rewighting can be treated as a building block and incorporated into any training task. What we need to do is 
+
+1) Write a per_sample_grad(model, inputs, targets, criterion) function, which takes model and mini-batch data as well as loss function as input argument, and outputs per sample gradients, a B by d tensor, where B is mini-batch size and d is dimension of gradient for each sample.
+
+2) Adding following lines of code inside your train() function's loop. For example:
+  
+```python
+  criterion = nn.CrossEntropyLoss(reduction='none').to(device) # here we want cross entropy loss to return per sample losses given a mini-batch, so we set reduction = 'none'
+  for  _, (inputs, target) in enumerate(train_loader):
+      #per sample gradient computation
+      grads = compute_per_sample_gradients(model, inputs, target,criterion)
+
+      # normalize and transpose
+      grads = F.normalize(grads,p=2.0)  
+      grads_t = torch.transpose(grads, 0, 1)
+      gram = torch.matmul(grads,grads_t)
+
+      # compute p score
+      p = [(row>=gamma).sum() for row in gram]
+
+      # compute weights
+      weights = torch.tensor(weights).to(device)
+      weights = weights/temp
+      weights = weights.detach()
+
+      # compute weighted loss and backpropagate weighted loss
+      weighted_loss = torch.inner(loss,weights)   
+      optimizer.zero_grad()
+      weighted_loss.backward()
+      optimizer.step()
+
+```
+
+
 ## Running the code 
+
+In this repo we already integrate batch reweighting for standard imagenet training. Here are usage:
+
+1) First, you need to download 
 
 ```python
 # To produce baseline (ERM) results:
