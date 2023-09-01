@@ -38,13 +38,17 @@ Batch rewighting can be treated as a building block and incorporated into any tr
 
 ## Running the code 
 
-In this repo we already integrate batch reweighting for standard imagenet training. Here are usage:
+In this repo we already integrate batch reweighting for standard CIFAR10/100-LT training. Here are usage:
 
-1) First, you need to download 
+1) First, you need to put cifar10/100-lt dataset (npz format) into ``data`` folder
+2) Then run one of the following command
 
 ```python
-# To produce baseline (ERM) results:
+# To produce baseline (ERM) results on cifar10-lt:
 python main.py --dataset cifar10-lt
+
+# To produce baseline (ERM) results on cifar10:
+python main.py --dataset cifar10
 
 # To produce batch reweighting results:
 python main.py --dataset cifar10-lt  --br 1
