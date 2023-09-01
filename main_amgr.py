@@ -103,7 +103,7 @@ def main():
                          val_acc=f"{val_acc:.2f}")
 
         records = []
-        if args.amgr:
+        if args.br:
             for _, (inputs, target,idx) in enumerate(train_loader):
                  
                 for i, index in enumerate(idx): 
@@ -288,7 +288,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         if args.logit_adj_train:
             output = output + args.logit_adjustments
         weighted_loss = 0
-        if args.amgr:
+        if args.br:
             grads = compute_per_sample_gradients(model, input_var, target_var,criterion)
             if args.norm:
                 grads = F.normalize(grads,p=2.0) 
@@ -341,7 +341,7 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
 
         loss = criterion(output, target_var)
 
-        if args.amgr:
+        if args.br:
             weighted_loss = torch.inner(loss,weights)
 
         loss=loss.mean()
@@ -349,11 +349,11 @@ def train_v2(train_loader, model, criterion, optimizer, num_train, gamma, z, epo
         for parameter in model.parameters():
             loss_r += torch.sum(parameter ** 2)
         loss = loss + args.weight_decay * loss_r
-        if args.amgr:
+        if args.br:
             weighted_loss = weighted_loss + args.weight_decay * loss_r
 
         optimizer.zero_grad()
-        if args.amgr:
+        if args.br:
             weighted_loss.backward()
         else:
             loss.backward()
