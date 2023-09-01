@@ -87,3 +87,15 @@ PyTorch Cifar Training
  
 
 ```
+
+## Some testing parameters to play around
+I also include some testing features in this version of code:
+```bash
+
+arguments:
+--wo            Reweighting scheme. 0 for softmax(-p) reweighting, and 1 for softmax(1/p) reweighting. (default 0)
+--measure       Fuse gradient and representation as signal. 0 for not using representation, 1 for using representation.  default=0, choices=[0, 1]
+
+```
+
+
